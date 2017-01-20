@@ -1,0 +1,31 @@
+{
+  "name": "waves-ggj-2017",
+  "version": "0.0.1",
+  "description": "Global game jam game with the 'waves' theme.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berithpy/islandgamesggj.git"
+  },
+  "dependencies": {
+    "phaser": "2.4.x",
+    "socket.io": "1.7.2"
+  },
+  "keywords": [
+    "waves",
+    "global",
+    "game",
+    "jam",
+    "ggj",
+    "2017"
+  ],
+  "author": "GGJ Friends",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/berithpy/islandgamesggj/issues"
+  },
+  "homepage": "https://github.com/berithpy/islandgamesggj#readme"
+}
