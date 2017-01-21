@@ -9,6 +9,7 @@ IslandFactory = function (group, waveGroup, x, y, sprite, waveSprite, controls) 
 	island = group.create(x, y, sprite);
 	island.anchor.set(0.5);
 	island.waveGroup=waveGroup
+	island.waveSprite = waveSprite
 
 	randomColor = function (min, max) {
 		return Math.random() * (max - min) + min

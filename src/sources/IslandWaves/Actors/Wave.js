@@ -11,9 +11,8 @@ WaveFactory = function (group, object, pointer, sprite) {
 
     game.physics.arcade.enable([wave]);
     game.physics.arcade.moveToPointer(wave, 200, pointer)
-
+    wave.body.collideWorldBounds = true;
     wave.update = function () {
-
     };
 
 
