@@ -5,7 +5,7 @@
  */
 
 WaveFactory = function (object, sprite) {
-    wave = game.add.weapon(50, sprite);
+    wave = game.add.weapon(200, sprite);
 
     wave.addBulletAnimation('wave', [0, 1, 2, 3, 4], 12, true);
 

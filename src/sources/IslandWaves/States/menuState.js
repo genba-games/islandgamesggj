@@ -2,9 +2,9 @@
 var menuState = function () { };
 menuState.prototype =
     {
-        preload: function() {
+        preload: function () {
             // Load assets
-            game.load.image('title_screen', 'src/graphics/title_screen.png')
+            game.load.image('title_screen', 'src/graphics/title_screen.png');
             game.load.image('bomb', 'src/graphics/bomb.png');
         },
 
@@ -24,13 +24,13 @@ menuState.prototype =
         /**
          * Tries to connect to a server and creates the game.
          */
-        connect: function() {
+        connect: function () {
             function start_game() {
                 game.state.start('play');
             }
 
             // TODO Setup input to define host
             conn = open_connection('localhost:3000', start_game);
-            
+
         },
     };

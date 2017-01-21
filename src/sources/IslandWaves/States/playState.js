@@ -78,7 +78,7 @@ playState.prototype =
 
             //  An explosion pool
             explosions = game.add.group();
-            explosions.createMultiple(30, 'kaboom');
+            explosions.createMultiple(300, 'kaboom');
             explosions.forEach(setupInvader, this);
             function setupInvader (island) {
                 island.anchor.x = 0.5;
@@ -89,10 +89,9 @@ playState.prototype =
         },
 
         update: function () {
-            function collisionHandler (bullet, island) {
+            function collisionHandler (island, bullet) {
                 //  When a bullet hits an alien we kill them both
-                //bullet.kill();
-                //alien.kill();
+                bullet.kill();
 
                 //  Increase the score
                 this.score += 1;
@@ -100,21 +99,14 @@ playState.prototype =
 
                 //  And create an explosion :)
                 var explosion = explosions.getFirstExists(false);
-                explosion.reset(bullet.x, bullet.y);
-                explosion.play('kaboom', 30, false, true);
-
-
-              
+                explosion.reset(island.x, island.y);
+                explosion.play('kaboom', 30, false, true);              
             }
           
             game.physics.arcade.collide(islands, islands);
             for(var i in islands.children){
                     game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, collisionHandler, null, this);
             }
-            
-            // game.physics.arcade.overlap(islands, powerups, overlapCallback);
-
-           
         },
         render: function () {
             // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
