@@ -9,11 +9,11 @@ IslandFactory = function (group, x, y, sprite, controls) {
 	s = group.create(x, y, sprite);
 	s.anchor.set(0.5);
 
-	randomColor = function(min, max){
+	randomColor = function (min, max) {
 		return Math.random() * (max - min) + min
 	};
-	s.tint = randomColor(0x888888 << 0 ,0xFFFFFF << 0);
-	
+	s.tint = randomColor(0x888888 << 0, 0xFFFFFF << 0);
+
 	s.controls = controls
 
 	s.keyPressed = function (key) {
@@ -31,6 +31,10 @@ IslandFactory = function (group, x, y, sprite, controls) {
 	s.acceleration = 1200;
 
 	s.update = function () {
+		s.rotation = game.physics.arcade.angleToPointer(s)
+		if (game.input.mousePointer.isDown) {
+			game.physics.arcade.moveToPointer(s, 400);
+		}
 		/// Boundaries
 		// Width
 		if (this.position.x > game.width + this.width / 2)
