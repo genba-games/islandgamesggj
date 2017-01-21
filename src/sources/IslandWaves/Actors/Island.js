@@ -29,6 +29,9 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls) {
 	// s.body.setCircle(25);
 	island.body.bounce.set(0.8);
 	island.body.maxVelocity = 300;
+	island.body.drag.x = 1000
+	island.body.drag.y = 1000
+	
 	island.acceleration = 1200;
 
 	//weapon
