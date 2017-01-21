@@ -5,10 +5,9 @@
  * :param y: Y position.
  * :param sprite: Target sprite for island. Anchor is automatically set to the middle.
  */
-IslandFactory = function (group, waveGroup, x, y, sprite, waveSprite, controls) {
+IslandFactory = function (group, x, y, sprite, waveSprite, controls) {
 	island = group.create(x, y, sprite);
 	island.anchor.set(0.5);
-	island.waveGroup = waveGroup
 	island.waveSprite = waveSprite
 
 	randomColor = function (min, max) {
@@ -32,12 +31,10 @@ IslandFactory = function (group, waveGroup, x, y, sprite, waveSprite, controls) 
 	island.body.maxVelocity = 300;
 	island.acceleration = 1200;
 
+	//weapon
+	island.weapon = WaveFactory(island, island.waveSprite)
 	island.update = function () {
 		this.rotation = game.physics.arcade.angleToPointer(this)
-		if (game.input.mousePointer.isDown) {
-			WaveFactory(this.waveGroup, this, game.input.mousePointer, this.waveSprite)
-			game.physics.arcade.moveToPointer(this, -100);
-		}
 		/// Boundaries
 		// Width
 		if (this.position.x > game.width + this.width / 2)
@@ -53,7 +50,7 @@ IslandFactory = function (group, waveGroup, x, y, sprite, waveSprite, controls) 
 		/// Input
 		if (this.controls == undefined) return;
 		if (this.keyPressed(this.controls.shoot)) {
-			WaveFactory(this, this.waveSprite);
+			this.weapon.fire();
 		}
 		// Acceleration
 		if (this.keyPressed(this.controls.up))
