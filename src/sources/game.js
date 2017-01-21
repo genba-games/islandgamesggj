@@ -9,12 +9,12 @@ game_state.main.prototype =
     preload: function() 
     {
         // Function called first to load all the assets
-        game.load.image('red_ship', 'src/graphics/ship.png');
+        game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
     },
 
     create: function() 
     {
-        Island(game, 0, 0, 'red_ship');
+        Island(game, 0, 0, 'island_placeholder');
     },
 
     update: function() 
