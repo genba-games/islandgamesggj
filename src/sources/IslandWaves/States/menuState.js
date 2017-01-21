@@ -18,27 +18,13 @@ menuState.prototype =
             // connect = game.add.button(game.world.centerX - 95, 400, 'bomb', start_game, this);
 
             // FIXME Placeholder
-            bomb = game.add.button(game.width / 2, game.height / 2 - 90, 'bomb', this.host, this);
+            bomb = game.add.button(game.width / 2, game.height / 2 - 90, 'bomb', this.connect, this);
         },
 
         /**
-         * Hosts a new game.
+         * Tries to connect to a server and creates the game.
          */
-        host: function() {
+        connect: function() {
             game.state.start('play');
-        },
-
-        /**
-         * Tries to connect to a server.
-         */
-        server_connect: function() {
-
-        },
-
-        /**
-         * Connects to a game.
-         */
-        game_connect: function() {
-
         },
     };
