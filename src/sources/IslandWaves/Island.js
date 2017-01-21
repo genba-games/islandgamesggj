@@ -6,17 +6,17 @@
  * :param sprite: Target sprite for island. Anchor is automatically set to the middle.
  */
 IslandFactory = function (group, x, y, sprite, controls) {
-	s = group.create(x, y, sprite);
-	s.anchor.set(0.5);
+	island = group.create(x, y, sprite);
+	island.anchor.set(0.5);
 
 	randomColor = function (min, max) {
 		return Math.random() * (max - min) + min
 	};
-	s.tint = randomColor(0x888888 << 0, 0xFFFFFF << 0);
+	island.tint = randomColor(0x888888 << 0, 0xFFFFFF << 0);
 
-	s.controls = controls
+	island.controls = controls
 
-	s.keyPressed = function (key) {
+	island.keyPressed = function (key) {
 		for (i in key)
 			if (game.input.keyboard.isDown(key[i]))
 				return true;
@@ -24,13 +24,13 @@ IslandFactory = function (group, x, y, sprite, controls) {
 	}
 
 	// Physics
-	game.physics.arcade.enable([s]);
+	game.physics.arcade.enable([island]);
 	// s.body.setCircle(25);
-	s.body.bounce.set(0.8);
-	s.body.maxVelocity = 300;
-	s.acceleration = 1200;
+	island.body.bounce.set(0.8);
+	island.body.maxVelocity = 300;
+	island.acceleration = 1200;
 
-	s.update = function () {
+	island.update = function () {
 		this.rotation = game.physics.arcade.angleToPointer(this)
 		if (game.input.mousePointer.isDown) {
 			game.physics.arcade.moveToPointer(this, -400);
@@ -64,5 +64,5 @@ IslandFactory = function (group, x, y, sprite, controls) {
 			this.body.acceleration.x = 0;
 	}
 
-	return s;
+	return island;
 }
