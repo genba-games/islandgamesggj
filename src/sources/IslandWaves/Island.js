@@ -20,34 +20,12 @@ Island = function (group, x, y, sprite, controls) {
 
 	// Physics
 	game.physics.arcade.enable([s]);
-	s.body.setCircle(25);
+	// s.body.setCircle(25);
 	s.body.bounce.set(0.8);
-	s.body.maxVelocity = 100
-	s.acceleration=25
+	s.body.maxVelocity = 300;
+	s.acceleration = 1200;
 
 	s.update = function () {
-		if (this.controls == undefined) return;
-		elapsed = this.game.time.elapsed * 0.001;
-		va = true;
-
-		/// Input
-		// Acceleration
-		if (this.keyPressed(this.controls.up))
-			this.body.velocity.y -= this.acceleration * elapsed;
-		else if (this.keyPressed(this.controls.down))
-			this.body.velocity.y += this.acceleration * elapsed;
-		if (this.keyPressed(this.controls.left))
-			this.body.velocity.x -= this.acceleration * elapsed;
-		else if (this.keyPressed(this.controls.right))
-			this.body.velocity.x += this.acceleration * elapsed;
-		else
-			va = false;
-
-		/// Update
-		// Translation
-		// this.position.y += this.velocity.x * elapsed;
-		// this.position.x += this.velocity.y * elapsed;
-
 		/// Boundaries
 		// Width
 		if (this.position.x > game.width + this.width / 2)
@@ -59,6 +37,22 @@ Island = function (group, x, y, sprite, controls) {
 			this.position.y = -this.height / 2 + 1;
 		else if (this.position.y < -this.height / 2)
 			this.position.y = game.height + this.height / 2 - 1;
+
+		/// Input
+		if (this.controls == undefined) return;
+		// Acceleration
+		if (this.keyPressed(this.controls.up))
+			this.body.acceleration.y = -this.acceleration;
+		else if (this.keyPressed(this.controls.down))
+			this.body.acceleration.y = this.acceleration;
+		else
+			this.body.acceleration.y = 0;
+		if (this.keyPressed(this.controls.left))
+			this.body.acceleration.x = -this.acceleration;
+		else if (this.keyPressed(this.controls.right))
+			this.body.acceleration.x = this.acceleration;
+		else
+			this.body.acceleration.x = 0;
 	}
 
 	return s
