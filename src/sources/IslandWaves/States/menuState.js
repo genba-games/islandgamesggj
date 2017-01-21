@@ -30,7 +30,7 @@ menuState.prototype =
             }
 
             // TODO Setup input to define host
-            conn = open_connection('localhost:3000', start_game);
+            socket = open_connection('localhost:3000', start_game);
 
         },
     };

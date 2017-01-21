@@ -17,7 +17,6 @@ function getCookie(cname) {
 }
 
 var iosession = localStorage.getItem('iosession');
-var conn = undefined;
 function open_connection(address, connectionCallback) {
     var conn = io.connect(address);
 

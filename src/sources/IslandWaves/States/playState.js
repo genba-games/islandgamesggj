@@ -93,8 +93,10 @@ playState.prototype =
             for (var i in islands.children) {
                 game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
             }
-            
+
             // Networking
+            // Connection is contained in the `conn` object.
+            // socket.on()
         },
     };
 
