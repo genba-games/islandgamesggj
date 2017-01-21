@@ -7,6 +7,10 @@
  */
 Island = function (group, x, y, sprite, controls) {
 	s = group.create(x, y, sprite);
+	randomColor = function(min, max){
+		return Math.random() * (max - min) + min
+	};
+	s.tint = randomColor(0x888888 << 0 ,0xFFFFFF << 0);
 	s.anchor.set(0.5);
 	
 	s.controls = controls
@@ -22,8 +26,8 @@ Island = function (group, x, y, sprite, controls) {
 	game.physics.arcade.enable([s]);
 	s.body.setCircle(25);
 	s.body.bounce.set(0.8);
-	s.body.maxVelocity = 100
-	s.acceleration=25
+	s.body.maxVelocity = 200
+	s.acceleration=75
 
 	s.update = function () {
 		if (this.controls == undefined) return;

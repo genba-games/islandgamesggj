@@ -37,8 +37,12 @@ game_state.main.prototype =
                 };
 
             islands = game.add.group();
+            
             Island(islands, 0, 0, 'island_placeholder', gondrols);
             Island(islands, 110, 110, 'island_placeholder');
+
+            waves = game.add.group();
+            powerups = game.add.group()
 
         },
 
