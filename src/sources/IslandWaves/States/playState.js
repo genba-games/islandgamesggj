@@ -9,6 +9,8 @@ playState.prototype =
             game.load.image('wave_placeholder2', 'src/graphics/bomb.png')
             game.load.image('wave_placeholder3', 'src/graphics/beach_ball.png')
             game.load.image('background', 'src/graphics/water.png');
+            game.load.image('powerup_coconut', 'src/graphics/stupid coconut.png')
+            game.load.image('powerup_hermit', 'src/graphics/hermit.png')
 
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
             game.load.audio('main_audio', 'src/audio/test.mp3')
@@ -38,33 +40,55 @@ playState.prototype =
                         Phaser.Keyboard.D,
                         Phaser.Keyboard.RIGHT
                     ],
-                    'shoot':[
+                    'shoot': [
                         Phaser.Keyboard.SPACEBAR
                     ]
                 };
+
 
             music = game.add.audio('main_audio');
             music.play();
 
             islands = game.add.group();
+            powerupIsland = game.add.group()
             IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
-            
-            powerups = game.add.group()
+            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
+            PowerUpFactory(powerupIsland, 'powerup_coconut')
 
+        },
+        powerUpCallBack: function (island, pUp) {
+            if (pUp.config.tint) {
+                var tintOrig = island.tint;
+                island.tint = 0x0000ff;
+            }
+            if (pUp.config.add) {
+                callBack = function () {
+                    island.tint = tintOrig
+                    for (var conf in pUp.config.add) {
+                        valueBuff = _.get(island, conf)
+                        value = valueBuff - pUp.config.add[conf]
+                        _.set(island, conf, value)
+                    };
+                };
+                for (var conf in pUp.config.add) {
+                    valueOrig = _.get(island, conf)
+                    value = valueOrig + pUp.config.add[conf]
+                    _.set(island, conf, value)
+                };
+
+            };
+            game.time.events.add(Phaser.Timer.SECOND * pUp.config.time, callBack, this);
+            pUp.destroy()
         },
 
         update: function () {
             game.physics.arcade.collide(islands, islands);
-            for(var i in islands.children){
-                    game.physics.arcade.collide(islands, islands.children[i].weapon.bullets);
+            for (var i in islands.children) {
+                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets);
             }
-            
-            // game.physics.arcade.overlap(islands, powerups, overlapCallback);
-
-           
+            game.physics.arcade.overlap(islands, powerupIsland, this.powerUpCallBack);
         },
-        render: function(){
+        render: function () {
             // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
         }
     };
