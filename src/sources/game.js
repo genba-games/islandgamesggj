@@ -1,7 +1,6 @@
 // Initialize Phaser, and creates a 800x800px game
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game_div');
 var game_state = {};
-
 // Creates a new 'main' state that wil contain the game
 game_state.main = function () {};
 game_state.main.prototype = 
@@ -14,7 +13,8 @@ game_state.main.prototype =
 
     create: function() 
     {
-        Island(game, 0, 0, 'island_placeholder');
+        islands = game.add.group();
+        Island(islands, 0, 0, 'island_placeholder');
     },
 
     update: function() 

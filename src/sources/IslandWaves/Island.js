@@ -1,13 +1,13 @@
 /*
  * Creates an island.
- * :param game: Target game.
+ * :param group: Target group.
  * :param x: X position.
  * :param y: Y position.
  * :param sprite: Target sprite for island. Anchor is automatically set to the middle.
  */
-Island = function (game, x, y, sprite)
+Island = function (group, x, y, sprite)
 	{
-		s = game.add.sprite(x, y, sprite);
+		s = group.create(x, y, sprite);
 		s.anchor.set(0.5);
 
 		s.controls = 
