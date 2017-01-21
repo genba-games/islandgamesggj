@@ -37,6 +37,8 @@ function open_connection(address, connectionCallback) {
             console.log('new connection', 'iosession: ', msg.iosession);
             localStorage.setItem('iosession', msg.iosession);
         }
+        conn.player_number = msg.player_number;
+        console.log('our player number is:', conn.player_number );
     });
 
     conn.on('chat', function (msg) {

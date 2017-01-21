@@ -4,8 +4,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-
 var valid_sessions = [];
+var session_map = {};
 
 app.use(express.static('static'));
 
@@ -21,24 +21,30 @@ io.on('connection', function(socket){
     });
     socket.on('hello', function(iosession){
         console.log('validating session:',iosession);
+
+        var response = {};
+
         if(valid_sessions.includes(iosession)){
-            //reconnect    
+            //reconnect
             console.log('user', iosession, 'reconnected');
-            socket.emit('session',{type:'reconnection'});
+            response.type = 'reconnection';
         }else{
             //new connection 
             console.log('session', iosession, 'not valid');
             var iosession = uuid.v4(); // generate a new session id
             console.log('new user', iosession, 'connected');
             valid_sessions.push(iosession);
-            socket.emit(
-                'session',
-                { type:'new connection', iosession:iosession }
-            );
+            response.type = 'new connection';
+            response.iosession = iosession;
+            // handle the sesison map: 
+            // update the socket id to session map
+            session_map[socket.id] = iosession;
         }
-        
+        response.player_number = valid_sessions.indexOf(iosession) + 1;
+        socket.emit('session', response);
     });
-    socket.on('shoot', function(msg){
+    socket.on('sync', function(msg){
+        io.emit('sync',msg);
     });
     socket.on('chat message', function(msg){
         console.log('message: ' + msg);

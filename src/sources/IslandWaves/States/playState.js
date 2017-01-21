@@ -1,5 +1,9 @@
 // Creates a new 'play' state that wil contain the game
 var playState = function () { };
+
+// configurations depending on who I am
+
+var initial_position = undefined;
 playState.prototype =
     {
         preload: function () {
@@ -13,6 +17,14 @@ playState.prototype =
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
             game.load.audio('main_audio', 'src/audio/test.mp3')
             game.load.spritesheet('kaboom', 'src/graphics/explode.png', 128, 128);
+            
+            initial_position = {
+                1: {x: game.width/2, y: 0},
+                2: {x: game.width, y: game.height/2},
+                3: {x: game.width/2, y: game.height},
+                4: {x: 0, y: game.height/2},
+            }
+
         },
 
         create: function () {
@@ -61,8 +73,8 @@ playState.prototype =
 
             //Group def
             islands = game.add.group();
-            IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
-            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
+            var island = IslandFactory(islands, initial_position[socket.player_number].x, initial_position[socket.player_number].y, 'island_placeholder', 'wave', gondrols);
+            //IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
 
             powerups = game.add.group()
 
@@ -97,6 +109,7 @@ playState.prototype =
             // Networking
             // Connection is contained in the `conn` object.
             // socket.on()
+            //socket.emit('sync', island.body);
         },
     };
 
