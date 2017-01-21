@@ -6,14 +6,13 @@
 
 WaveFactory = function (object, sprite) {
     wave = game.add.weapon(50, sprite);
-    wave.tint = object.tint
 
     wave.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     wave.bulletSpeed = 600;
     wave.fireRate = 100;
     wave.trackSprite(object, 0, 0, true);
     wave.update = function () {
-
+        this.fire()
     };
 
 

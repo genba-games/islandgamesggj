@@ -32,7 +32,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls) {
 	island.acceleration = 1200;
 
 	island.update = function () {
-		//this.rotation = game.physics.arcade.angleToPointer(this)
+		this.rotation = game.physics.arcade.angleToPointer(this)
 		/// Boundaries
 		// Width
 		if (this.position.x > game.width + this.width / 2)
