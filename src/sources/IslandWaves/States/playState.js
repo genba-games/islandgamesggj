@@ -11,6 +11,7 @@ playState.prototype =
             game.load.image('background', 'src/graphics/water.png');
 
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
+            game.load.audio('main_audio', 'src/audio/test.mp3')
         },
 
         create: function () {
@@ -41,6 +42,9 @@ playState.prototype =
                         Phaser.Keyboard.SPACEBAR
                     ]
                 };
+
+            music = game.add.audio('main_audio');
+            music.play();
 
             islands = game.add.group();
             IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
