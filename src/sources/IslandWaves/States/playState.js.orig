@@ -50,10 +50,13 @@ playState.prototype =
             IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
             IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
 
+<<<<<<< Updated upstream
             mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
             mute_key.onDown.add(mute, this);
 
+=======
             powerups = game.add.group()
+>>>>>>> Stashed changes
         },
 
         update: function () {
@@ -61,12 +64,21 @@ playState.prototype =
             for (var i in islands.children) {
                 game.physics.arcade.collide(islands, islands.children[i].weapon.bullets);
             }
-            
+
             // game.physics.arcade.overlap(islands, powerups, overlapCallback);
 
-           
+
         },
         render: function () {
             // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
         }
     };
+
+function mute () {
+    if(music.isPlaying){
+        music.pause()
+    }
+    else{
+        music.resume();
+    }
+}
