@@ -16,7 +16,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	island.tint = randomColor(0x888888 << 0, 0xFFFFFF << 0);
 
 	island.controls = controls
-
+	//island.animations.add('kaboom');
 	island.keyPressed = function (key) {
 		for (i in key)
 			if (game.input.keyboard.isDown(key[i]))
