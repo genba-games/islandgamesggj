@@ -41,22 +41,6 @@ game_state.main.prototype =
             waves = game.add.group();
             IslandFactory(islands, waves, 0, 0, 'island_placeholder', 'wave_placeholder', gondrols);
             IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            
-
             
             powerups = game.add.group()
 
@@ -64,8 +48,11 @@ game_state.main.prototype =
 
         update: function () {
             game.physics.arcade.collide(islands, islands);
+            game.physics.arcade.collide(islands, waves);
         },
-
+        render: function(){
+            game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
+        }
     };
 
 // Add and start the 'main' state to start the game
