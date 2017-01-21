@@ -52,6 +52,9 @@ playState.prototype =
             
             powerups = game.add.group()
 
+            mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
+            mute_key.onDown.add(mute, this);
+
         },
 
         update: function () {
@@ -59,7 +62,7 @@ playState.prototype =
             for(var i in islands.children){
                     game.physics.arcade.collide(islands, islands.children[i].weapon.bullets);
             }
-            
+
             // game.physics.arcade.overlap(islands, powerups, overlapCallback);
 
            
@@ -68,3 +71,12 @@ playState.prototype =
             // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
         }
     };
+
+function mute () {
+    if(music.isPlaying){
+        music.pause()
+    }
+    else{
+        music.resume();
+    }
+}
