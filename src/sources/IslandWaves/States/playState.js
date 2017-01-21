@@ -70,3 +70,12 @@ playState.prototype =
             // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
         }
     };
+
+function mute () {
+    if(music.isPlaying){
+        music.pause()
+    }
+    else{
+        music.resume();
+    }
+}
