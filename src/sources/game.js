@@ -2,27 +2,51 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game_div');
 var game_state = {};
 // Creates a new 'main' state that wil contain the game
-game_state.main = function () {};
-game_state.main.prototype = 
-{
-    preload: function() 
+game_state.main = function () { };
+game_state.main.prototype =
     {
-        // Function called first to load all the assets
-        game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
-    },
+        preload: function () {
+            // Function called first to load all the assets
+            game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
+        },
 
-    create: function() 
-    {
-        islands = game.add.group();
-        Island(islands, 0, 0, 'island_placeholder');
-    },
+        create: function () {
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+            gondrols =
+                {
+                    'up':
+                    [
+                        Phaser.Keyboard.W,
+                        Phaser.Keyboard.UP
+                    ],
+                    'down':
+                    [
+                        Phaser.Keyboard.S,
+                        Phaser.Keyboard.DOWN
+                    ],
+                    'left':
+                    [
+                        Phaser.Keyboard.A,
+                        Phaser.Keyboard.LEFT
+                    ],
+                    'right':
+                    [
+                        Phaser.Keyboard.D,
+                        Phaser.Keyboard.RIGHT
+                    ],
+                };
 
-    update: function() 
-    {
-        
-    },
+            islands = game.add.group();
+            Island(islands, 0, 0, 'island_placeholder', gondrols);
+            Island(islands, 110, 110, 'island_placeholder');
 
-};
+        },
+
+        update: function () {
+            game.physics.arcade.collide(islands, islands);
+        },
+
+    };
 
 // Add and start the 'main' state to start the game
 game.state.add('main', game_state.main);
