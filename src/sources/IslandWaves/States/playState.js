@@ -59,7 +59,7 @@ playState.prototype =
         powerUpCallBack: function (island, pUp) {
             if (pUp.config.tint) {
                 var tintOrig = island.tint;
-                island.tint = 0x0000ff;
+                island.tint = pUp.config.tint;
             }
             if (pUp.config.add) {
                 callBack = function () {
@@ -75,8 +75,16 @@ playState.prototype =
                     value = valueOrig + pUp.config.add[conf]
                     _.set(island, conf, value)
                 };
-
             };
+            if(pUp.config.scale){
+                island.scale.x *= pUp.config.scale
+                island.scale.y *= pUp.config.scale
+                callBack = function () {
+                    island.scale.x=1
+                    island.scale.y=1
+                }
+                // island.scale.setTo(pUp.config.scale.x*,)
+            }
             game.time.events.add(Phaser.Timer.SECOND * pUp.config.time, callBack, this);
             pUp.destroy()
         },
