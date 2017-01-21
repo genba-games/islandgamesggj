@@ -49,9 +49,9 @@ playState.prototype =
             this.score = 0;
             this.scoreString = '';
             this.scoreText;
-            var lives;    
-            
-            
+            var lives;
+
+
             //  Music
             music = game.add.audio('main_audio');
             music.play();
@@ -63,13 +63,13 @@ playState.prototype =
             islands = game.add.group();
             IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
             IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
-            
+
             powerups = game.add.group()
-            
+
 
             //  The score
             this.scoreString = 'Score : ';
-             this.scoreText = game.add.text(10, 10,  this.scoreString +  this.score, { font: '34px Arial', fill: '#fff' });
+            this.scoreText = game.add.text(10, 10, this.scoreString + this.score, { font: '34px Arial', fill: '#fff' });
 
             //  Lives
             lives = game.add.group();
@@ -80,44 +80,43 @@ playState.prototype =
             explosions = game.add.group();
             explosions.createMultiple(300, 'kaboom');
             explosions.forEach(setupInvader, this);
-            function setupInvader (island) {
+            function setupInvader(island) {
                 island.anchor.x = 0.5;
                 island.anchor.y = 0.5;
                 island.animations.add('kaboom');
             }
-        
         },
 
         update: function () {
-            function collisionHandler (island, bullet) {
-                //  When a bullet hits an alien we kill them both
-                bullet.kill();
-
-                //  Increase the score
-                this.score += 1;
-                this.scoreText.text = this.scoreString + this.score;
-
-                //  And create an explosion :)
-                var explosion = explosions.getFirstExists(false);
-                explosion.reset(island.x, island.y);
-                explosion.play('kaboom', 30, false, true);              
-            }
-          
+            // Collision          
             game.physics.arcade.collide(islands, islands);
-            for(var i in islands.children){
-                    game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, collisionHandler, null, this);
+            for (var i in islands.children) {
+                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
             }
+            
+            // Networking
         },
-        render: function () {
-            // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
-        }
     };
 
-function mute () {
-    if(music.isPlaying){
+function islandBulletCollisionHandler(island, bullet) {
+    //  When a bullet hits an alien we kill them both
+    bullet.kill();
+
+    //  Increase the score
+    this.score += 1;
+    this.scoreText.text = this.scoreString + this.score;
+
+    //  And create an explosion :)
+    var explosion = explosions.getFirstExists(false);
+    explosion.reset(island.x, island.y);
+    explosion.play('kaboom', 30, false, true);
+}
+
+function mute() {
+    if (music.isPlaying) {
         music.pause()
     }
-    else{
+    else {
         music.resume();
     }
 }
