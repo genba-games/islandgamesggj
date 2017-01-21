@@ -8,6 +8,7 @@ game_state.main.prototype =
         preload: function () {
             // Function called first to load all the assets
             game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
+            game.load.image('wave_placeholder','src/graphics/PLACEHOLDERWAVE.png');
         },
 
         create: function () {
@@ -37,26 +38,26 @@ game_state.main.prototype =
                 };
 
             islands = game.add.group();
-            
-            IslandFactory(islands, 0, 0, 'island_placeholder', gondrols);
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            waves = game.add.group();
+            IslandFactory(islands, waves, 0, 0, 'island_placeholder', 'wave_placeholder', gondrols);
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
             
 
-            waves = game.add.group();
+            
             powerups = game.add.group()
 
         },
