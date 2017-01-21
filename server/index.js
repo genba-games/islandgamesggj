@@ -42,6 +42,7 @@ io.on('connection', function(socket){
         }
         response.player_number = valid_sessions.indexOf(iosession) + 1;
         socket.emit('session', response);
+        io.emit('player connected',response);
     });
     socket.on('sync', function(msg){
         io.emit('sync',msg);

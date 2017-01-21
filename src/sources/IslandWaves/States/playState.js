@@ -56,6 +56,17 @@ playState.prototype =
                     ]
                 };
 
+            // networking
+            socket.on('new player', function(new_player){
+                IslandFactory(
+                    islands, 
+                    initial_position[new_player.player_number].x, 
+                    initial_position[new_player.player_number].y, 
+                    'island_placeholder', 
+                    'wave'
+                );
+            });
+
             // Scoring def    
             var starfield;
             this.score = 0;
@@ -109,7 +120,8 @@ playState.prototype =
             // Networking
             // Connection is contained in the `conn` object.
             // socket.on()
-            //socket.emit('sync', island.body);
+            data = {x:island.x, y:island.y};
+            socket.emit('sync', data);
         },
     };
 
