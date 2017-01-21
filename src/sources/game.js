@@ -39,7 +39,22 @@ game_state.main.prototype =
             islands = game.add.group();
             
             IslandFactory(islands, 0, 0, 'island_placeholder', gondrols);
-            IslandFactory(islands, 110, 110, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            
 
             waves = game.add.group();
             powerups = game.add.group()

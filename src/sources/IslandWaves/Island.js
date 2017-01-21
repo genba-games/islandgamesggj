@@ -31,9 +31,9 @@ IslandFactory = function (group, x, y, sprite, controls) {
 	s.acceleration = 1200;
 
 	s.update = function () {
-		s.rotation = game.physics.arcade.angleToPointer(s)
+		this.rotation = game.physics.arcade.angleToPointer(this)
 		if (game.input.mousePointer.isDown) {
-			game.physics.arcade.moveToPointer(s, 400);
+			game.physics.arcade.moveToPointer(this, -400);
 		}
 		/// Boundaries
 		// Width
