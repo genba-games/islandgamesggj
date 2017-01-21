@@ -11,6 +11,7 @@ playState.prototype =
             game.load.image('background', 'src/graphics/water.png');
 
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
+            game.load.audio('main_audio', 'src/audio/test.mp3')
         },
 
         create: function () {
@@ -42,6 +43,9 @@ playState.prototype =
                     ]
                 };
 
+            music = game.add.audio('main_audio');
+            music.play();
+
             islands = game.add.group();
             IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
             IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
@@ -52,7 +56,11 @@ playState.prototype =
 
         update: function () {
             game.physics.arcade.collide(islands, islands);
-            // game.physics.arcade.collide(islands, waves);
+            for(var i in islands.children){
+                    game.physics.arcade.collide(islands, islands.children[i].weapon.bullets);
+            }
+            
+            // game.physics.arcade.overlap(islands, powerups, overlapCallback);
 
            
         },
