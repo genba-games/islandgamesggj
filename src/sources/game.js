@@ -1,12 +1,11 @@
-// Initialize Phaser, and creates a 400x490px game
-var game = new Phaser.Game(500, 500, Phaser.AUTO, 'game_div');
+// Initialize Phaser, and creates a 800x800px game
+var game = new Phaser.Game(800, 800, Phaser.AUTO, 'game_div');
 var game_state = {};
 
 // Creates a new 'main' state that wil contain the game
 game_state.main = function () {};
 game_state.main.prototype = 
 {
-
     preload: function() 
     {
         // Function called first to load all the assets
@@ -15,48 +14,7 @@ game_state.main.prototype =
 
     create: function() 
     {
-        controls1 = 
-        {
-            'up' : 
-            [
-                Phaser.Keyboard.W
-            ],
-            'down' : 
-            [
-                Phaser.Keyboard.S
-            ],
-            'left' : 
-            [
-                Phaser.Keyboard.A
-            ],
-            'right' : 
-            [
-                Phaser.Keyboard.D
-            ],
-        };
-
-        controls2 = 
-        {
-            'up' : 
-            [
-                Phaser.Keyboard.UP
-            ],
-            'down' : 
-            [
-                Phaser.Keyboard.DOWN
-            ],
-            'left' : 
-            [
-                Phaser.Keyboard.LEFT
-            ],
-            'right' : 
-            [
-                Phaser.Keyboard.RIGHT
-            ],
-        };
-        
-        game.add.sprite(0, 0, 'red_ship');
-
+        Island(game, 0, 0, 'red_ship');
     },
 
     update: function() 
