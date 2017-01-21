@@ -14,8 +14,8 @@
 =======
         <script src="src/sources/Phaser/phaser.min.js"></script>
         <script src="src/sources/IslandWaves/Island.js"></script>
-        <script src="src/sources/IslandWaves/Wave.js"></script>
->>>>>>> 832ab556ed6fd0dd681772fcd82d406eab41e532
+        <script src="src/sources/IslandWaves/wave.js"></script>
+>>>>>>> origin/devBerithpy
         <script src="src/sources/game.js"></script>
     </head>
     <body></body>

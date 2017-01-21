@@ -5,10 +5,13 @@
  * :param y: Y position.
  * :param sprite: Target sprite for island. Anchor is automatically set to the middle.
  */
-IslandFactory = function (group, waveGroup, x, y, sprite, waveSprite, controls) {
+IslandFactory = function (group, x, y, sprite, waveSprite, controls) {
 	island = group.create(x, y, sprite);
 	island.anchor.set(0.5);
+<<<<<<< HEAD:src/sources/IslandWaves/Actors/Island.js
 	island.waveGroup = waveGroup
+=======
+>>>>>>> origin/devBerithpy:src/sources/IslandWaves/Island.js
 	island.waveSprite = waveSprite
 
 	randomColor = function (min, max) {
@@ -34,10 +37,6 @@ IslandFactory = function (group, waveGroup, x, y, sprite, waveSprite, controls) 
 
 	island.update = function () {
 		this.rotation = game.physics.arcade.angleToPointer(this)
-		if (game.input.mousePointer.isDown) {
-			WaveFactory(this.waveGroup, this, game.input.mousePointer, this.waveSprite)
-			game.physics.arcade.moveToPointer(this, -100);
-		}
 		/// Boundaries
 		// Width
 		if (this.position.x > game.width + this.width / 2)
