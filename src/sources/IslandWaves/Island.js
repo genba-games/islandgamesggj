@@ -5,9 +5,14 @@
  * :param y: Y position.
  * :param sprite: Target sprite for island. Anchor is automatically set to the middle.
  */
-Island = function (group, x, y, sprite, controls) {
+IslandFactory = function (group, x, y, sprite, controls) {
 	s = group.create(x, y, sprite);
 	s.anchor.set(0.5);
+
+	randomColor = function(min, max){
+		return Math.random() * (max - min) + min
+	};
+	s.tint = randomColor(0x888888 << 0 ,0xFFFFFF << 0);
 	
 	s.controls = controls
 
@@ -55,5 +60,5 @@ Island = function (group, x, y, sprite, controls) {
 			this.body.acceleration.x = 0;
 	}
 
-	return s
+	return s;
 }
