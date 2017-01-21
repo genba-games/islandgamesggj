@@ -1,3 +1,5 @@
+var socket = io;
+
 function setCookie(cname, cvalue) {
     var d = new Date();
     d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
@@ -18,9 +20,6 @@ function getCookie(cname) {
 
 var iosession = localStorage.getItem('iosession');
 $(function () {
-    var socket = io();
-    socket.connect('localhost:3000');
-
     socket.on('connect', function () {
         console.log('IO Session:', iosession);
         console.log('LS:', localStorage);
