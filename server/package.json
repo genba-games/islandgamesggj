@@ -1,0 +1,17 @@
+{
+    "name": "SUPER-GAME-AWESOME",
+    "version": "0.0.0",
+    "description": "THE MOST AWESOME GAME EVAH",
+    "main": "index.js",
+    "author": "Mateo Torres",
+    "private": true,
+    "license": "BSD",
+    "dependencies": {
+        "express": "4.13.4",
+        "socket.io": "1.7.2",
+        "node-uuid": "1.4.7"
+    },
+    "scripts": {
+        "start": "node index.js"
+    }
+}
