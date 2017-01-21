@@ -57,7 +57,8 @@ playState.prototype =
                 };
 
             // networking
-            socket.on('new player', function(new_player){
+            socket.on('player connected', function(new_player){
+                console.log('new player');
                 IslandFactory(
                     islands, 
                     initial_position[new_player.player_number].x, 
