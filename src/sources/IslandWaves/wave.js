@@ -4,14 +4,14 @@
  * :param sprite: Target sprite for island. Anchor is automatically set to the middle.
  */
 
-WaveFactory = function (group, object, pointer, sprite) {
-    wave = group.create(object.x, object.y, sprite)
-    wave.anchor.set(0.5)
+WaveFactory = function (object, sprite) {
+    wave = game.add.weapon(50, sprite);
     wave.tint = object.tint
 
-    game.physics.arcade.enable([wave]);
-    game.physics.arcade.moveToPointer(wave, 200, pointer)
-
+    wave.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    wave.bulletSpeed = 600;
+    wave.fireRate = 100;
+    wave.trackSprite(object, 0, 0, true);
     wave.update = function () {
 
     };

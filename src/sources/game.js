@@ -38,23 +38,15 @@ game_state.main.prototype =
                     [
                         Phaser.Keyboard.D,
                         Phaser.Keyboard.RIGHT
+                    ],
+                    'shoot':[
+                        Phaser.Keyboard.SPACEBAR
                     ]
                 };
 
             islands = game.add.group();
-            waves = game.add.group();
-            IslandFactory(islands, waves, 0, 0, 'island_placeholder', 'wave_placeholder', gondrols);
-            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
-            
-            waves = game.add.weapon(50, 'wave_placeholder');
-            waves.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-            waves.bulletSpeed = 600;
-            waves.fireRate = 100;
-            fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
-
-            i = IslandFactory(islands, 0, 0, 'island_placeholder', gondrols);
-            waves.trackSprite(i, 0, 0, true);
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+            IslandFactory(islands, 0, 0, 'island_placeholder', 'wave_placeholder', gondrols);
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave_placeholder');
             
             powerups = game.add.group()
 
@@ -62,15 +54,12 @@ game_state.main.prototype =
 
         update: function () {
             game.physics.arcade.collide(islands, islands);
-            game.physics.arcade.collide(islands, waves);
+            // game.physics.arcade.collide(islands, waves);
 
-             if (fireButton.isDown)
-             {
-                waves.fire();
-             }
+           
         },
         render: function(){
-            game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
+            // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
         }
     };
 

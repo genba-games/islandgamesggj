@@ -5,11 +5,10 @@
  * :param y: Y position.
  * :param sprite: Target sprite for island. Anchor is automatically set to the middle.
  */
-IslandFactory = function (group, x, y, sprite, controls) {
+IslandFactory = function (group, x, y, sprite, waveSprite, controls) {
 	island = group.create(x, y, sprite);
 	island.anchor.set(0.5);
-	island.waveGroup=waveGroup
-	island.waveSprite=waveSprite
+	island.waveSprite = waveSprite
 
 	randomColor = function (min, max) {
 		return Math.random() * (max - min) + min
@@ -48,6 +47,9 @@ IslandFactory = function (group, x, y, sprite, controls) {
 
 		/// Input
 		if (this.controls == undefined) return;
+		if (this.keyPressed(this.controls.shoot)) {
+			WaveFactory(this, this.waveSprite);
+		}
 		// Acceleration
 		if (this.keyPressed(this.controls.up))
 			this.body.acceleration.y = -this.acceleration;
