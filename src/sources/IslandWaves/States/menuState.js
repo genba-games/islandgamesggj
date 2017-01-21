@@ -9,6 +9,9 @@ menuState.prototype =
         },
 
         create: function () {
+            // Set background
+            game.add.tileSprite(0, 0, 800, 600, 'title_screen');
+
             // host = game.add.button(game.world.centerX - 95, 400, 'bomb', start_game, this);
             // host_address
             // host_connection_indicator

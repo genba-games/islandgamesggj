@@ -5,6 +5,8 @@ playState.prototype =
         preload: function () {
             // Load assets
             game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
+            game.load.image('wave', 'src/graphics/beach_ball.png')
+            game.load.image('background', 'src/graphics/water.png');
         },
 
         create: function () {
@@ -36,23 +38,27 @@ playState.prototype =
             islands = game.add.group();
             waves = game.add.group();
             powerups = game.add.group()
-            
-            IslandFactory(islands, 0, 0, 'island_placeholder', gondrols);
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
-            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder');
+
+            // Set background
+            game.add.tileSprite(0, 0, 64, 64, "background");
+
+            // Spawn actors            
+            IslandFactory(islands, waves, 0, 0, 'island_placeholder', 'wave', gondrols);
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            IslandFactory(islands, waves, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
         },
 
         update: function () {
