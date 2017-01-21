@@ -25,6 +25,12 @@ menuState.prototype =
          * Tries to connect to a server and creates the game.
          */
         connect: function() {
-            game.state.start('play');
+            function start_game() {
+                game.state.start('play');
+            }
+
+            // TODO Setup input to define host
+            conn = open_connection('localhost:3000', start_game);
+            
         },
     };
