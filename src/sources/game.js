@@ -1,53 +1,12 @@
 // Initialize Phaser, and creates a 800x800px game
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game_div');
-var game_state = {};
-// Creates a new 'main' state that wil contain the game
-game_state.main = function () { };
-game_state.main.prototype =
-    {
-        preload: function () {
-            // Function called first to load all the assets
-            game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
-        },
 
-        create: function () {
-            game.physics.startSystem(Phaser.Physics.ARCADE);
-            gondrols =
-                {
-                    'up':
-                    [
-                        Phaser.Keyboard.W,
-                        Phaser.Keyboard.UP
-                    ],
-                    'down':
-                    [
-                        Phaser.Keyboard.S,
-                        Phaser.Keyboard.DOWN
-                    ],
-                    'left':
-                    [
-                        Phaser.Keyboard.A,
-                        Phaser.Keyboard.LEFT
-                    ],
-                    'right':
-                    [
-                        Phaser.Keyboard.D,
-                        Phaser.Keyboard.RIGHT
-                    ],
-                };
+socket = undefined;
 
-            islands = game.add.group();
-            Island(islands, 0, 0, 'island_placeholder', gondrols);
-            Island(islands, 110, 110, 'island_placeholder');
+// Add the game states
+game.state.add('boot', bootState);
+game.state.add('menu', menuState);
+game.state.add('play', playState);
 
-        },
-
-        update: function () {
-            game.physics.arcade.collide(islands, islands);
-        },
-
-    };
-
-// Add and start the 'main' state to start the game
-game.state.add('main', game_state.main);
-game.state.start('main');
+// Start the 'boot' state
+game.state.start('boot');
