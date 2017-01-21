@@ -1,25 +1,6 @@
-// Initialize Phaser, and creates a 800x600px game
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game_div');
-<<<<<<< HEAD
-
-socket = undefined;
-
-// Add the game states
-game.state.add('boot', bootState);
-game.state.add('menu', menuState);
-game.state.add('play', playState);
-
-// Start the 'boot' state
-game.state.start('boot');
-=======
-var game_state = {};
-
-//var waves;
-//var fireButton;
-
-// Creates a new 'main' state that wil contain the game
-game_state.main = function () { };
-game_state.main.prototype =
+// Creates a new 'play' state that wil contain the game
+var playState = function () { };
+playState.prototype =
     {
         preload: function () {
             // Function called first to load all the assets
@@ -74,8 +55,3 @@ game_state.main.prototype =
             // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
         }
     };
-
-// Add and start the 'main' state to start the game
-game.state.add('main', game_state.main);
-game.state.start('main');
->>>>>>> origin/devBerithpy
