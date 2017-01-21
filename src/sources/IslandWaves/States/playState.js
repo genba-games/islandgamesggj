@@ -51,7 +51,10 @@ playState.prototype =
 
         update: function () {
             game.physics.arcade.collide(islands, islands);
-            game.physics.arcade.collide(islands, island.weapon.bullets);
+            for(var i in islands.children){
+                    game.physics.arcade.collide(islands, islands.children[i].weapon.bullets);
+            }
+            
             // game.physics.arcade.overlap(islands, powerups, overlapCallback);
 
 

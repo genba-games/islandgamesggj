@@ -5,7 +5,7 @@
  * :param y: Y position.
  * :param sprite: Target sprite for island. Anchor is automatically set to the middle.
  */
-IslandFactory = function (group, x, y, sprite, waveSprite, controls) {
+IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	island = group.create(x, y, sprite);
 	island.anchor.set(0.5);
 	island.waveSprite = waveSprite
