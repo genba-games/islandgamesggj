@@ -8,6 +8,9 @@ playState.prototype =
             game.load.image('wave_placeholder1', 'src/graphics/PLACEHOLDERWAVE.png');
             game.load.image('wave_placeholder2', 'src/graphics/bomb.png')
             game.load.image('wave_placeholder3', 'src/graphics/beach_ball.png')
+            game.load.image('background', 'src/graphics/water.png');
+
+            game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
         },
 
         create: function () {
@@ -34,18 +37,16 @@ playState.prototype =
                         Phaser.Keyboard.D,
                         Phaser.Keyboard.RIGHT
                     ],
-                    'shoot': [
+                    'shoot':[
                         Phaser.Keyboard.SPACEBAR
                     ]
                 };
 
             islands = game.add.group();
+            IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
+            IslandFactory(islands, Math.random()*800, Math.random()*600, 'island_placeholder', 'wave');
+            
             powerups = game.add.group()
-            IslandFactory(islands, 0, 0, 'island_placeholder', 'wave_placeholder1', gondrols);
-            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave_placeholder1', gondrols);
-            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave_placeholder2', gondrols);
-            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave_placeholder3', gondrols);
-
 
         },
 
@@ -57,9 +58,9 @@ playState.prototype =
             
             // game.physics.arcade.overlap(islands, powerups, overlapCallback);
 
-
+           
         },
-        render: function () {
-            // game.debug.text('Active waves: ' + island.weapon.bullets.countLiving() + ' / ' +island.weapon.bullets.total, 32, 32);
+        render: function(){
+            // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
         }
     };
