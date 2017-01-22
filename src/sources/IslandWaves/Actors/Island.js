@@ -16,12 +16,6 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	// island.tint = randomColor(0xAAAAAA << 0, 0xFFFFFF << 0);
 
 	island.controls = controls;
-	island.keyPressed = function (key) {
-		for (i in key)
-			if (game.input.keyboard.isDown(key[i]))
-				return true;
-		return false;
-	}
 	island.cooldown = false;
 	island.invulnerable = false;
 	island.health = 2500;
@@ -56,7 +50,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 
 		/// Input
 		if (this.controls == undefined) return;
-		if (this.keyPressed(this.controls.shoot)) {
+		if (keyPressed(this.controls.shoot)) {
 			callback = function () {
 				this.cooldown = false;
 			};
@@ -76,7 +70,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 			this.body.acceleration.y = 0;
 		if (keyPressed(this.controls.left))
 			this.body.acceleration.x = -this.acceleration;
-		else if (this.keyPressed(this.controls.right))
+		else if (keyPressed(this.controls.right))
 			this.body.acceleration.x = this.acceleration;
 		else
 			this.body.acceleration.x = 0;
