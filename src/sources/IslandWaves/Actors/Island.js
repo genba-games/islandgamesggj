@@ -54,7 +54,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 			callback = function () {
 				this.cooldown = false;
 			};
-			if (!this.cooldown) {
+			if (!this.cooldown && this.alive) {
 				this.weapon.fire();
 				game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity);
 				game.time.events.add(this.weapon.fireRate, callback, this)

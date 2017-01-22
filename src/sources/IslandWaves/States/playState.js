@@ -23,11 +23,14 @@ playState.prototype =
             game.load.image('PUslow', 'src/graphics/PU bigger size.png')
             game.load.image('PUspeed', 'src/graphics/PU bigger size.png')
             game.load.image('PUangery', 'src/graphics/hermit.png')
+            game.load.image('PUcoconut', 'src/graphics/stupid coconut.png')
 
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
-            game.load.audio('main_audio', 'src/audio/battle.wav')
             game.load.spritesheet('kaboom', 'src/graphics/explode.png', 128, 128);
 
+            game.load.audio('main_audio', 'src/audio/battle.ogg')
+            game.load.audio('good', 'src/audio/good.ogg')
+            game.load.audio('bad', 'src/audio/bad.ogg')
             this.initial_position = {
                 1: { x: game.width / 2, y: 0 },
                 2: { x: game.width, y: game.height / 2 },
@@ -120,6 +123,11 @@ playState.prototype =
             }
         },
         powerUpCallback: function (island, pUp) {
+            if(pup.config.fx){
+                music = game.add.audio(pUp.config.fx);
+                music.play();
+            }
+            
             if (pUp.config.tint) {
                 var tintOrig = island.tint;
                 island.tint = pUp.config.tint;

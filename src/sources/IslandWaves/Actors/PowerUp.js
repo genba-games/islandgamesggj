@@ -14,7 +14,8 @@ islandPowerUp = [
             'powerUpSpeed': 2400,
         },
         tint: 0xffff00,
-        sprite:'PUspeed'
+        sprite:'PUspeed',
+        fx: 'good'
     },
     {
         time: 5,
@@ -24,7 +25,17 @@ islandPowerUp = [
             'body.drag.y': 5000000000000,
         },
         tint: 0x0000ff,
-        sprite:'PUslow'
+        sprite:'PUslow',
+        fx: 'bad'
+    },
+    {
+        time: 5,
+        add: {
+            'weapon.fireRate': 1000,
+        },
+        tint: 0x00ff00,
+        sprite:'PUcoconut',
+        fx: 'bad'
     },
     {
         time: 5,
@@ -32,17 +43,20 @@ islandPowerUp = [
             'weapon.fireRate': -750,
         },
         tint: 0xff0000,
-        sprite:'PUangery'
+        sprite:'PUangery',
+        fx: 'good'
     },
     {
         time: 5,
         scale: 5,
-        sprite:'PUbig'
+        sprite:'PUbig',
+        fx: 'good'
     },
     {
         time: 5,
         scale: 0.3,
-        sprite:'PUsmall'
+        sprite:'PUsmall',
+        fx: 'bad'
     },
 ]
 PowerUpFactory = function (group) {
