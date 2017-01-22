@@ -49,6 +49,7 @@ playState.prototype =
             
             socket.on('player info', function(player){
                 this.addPlayer(player);
+            });
             /// Setup controls
             var controls = undefined;
             // Host
@@ -92,12 +93,6 @@ playState.prototype =
                 this.players[player.player_number].y = player.y;
             });
 
-            socket.on('player key', function(player_key){
-                
-            });
-
-            // Scoring def    
-            var starfield;
             // Scoring definitions
             this.score = 0;
             this.scoreString = '';
