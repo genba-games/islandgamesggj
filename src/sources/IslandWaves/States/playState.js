@@ -35,12 +35,15 @@ playState.prototype =
             // Player events
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
-                    self.addPlayer(new_player);
+                    self.addPlayer(new_player.player_number);
                     console.log('emit player info',self.getPlayersInfo());
                     self.gottaSendPlayersInfo = 60;
                 });
+
+                socket.on('player update',function(data){
+                    networkControllers[data.player_number] = data.keys;
+                });
             } else {
-                console.log('FUCK');
                 socket.on('asd', function (players) {
                     console.log('received player info', players);
                     for(var i=0; i < players.data.length; i++){
@@ -56,7 +59,6 @@ playState.prototype =
                     // update the position of the player
                     if(player.player_number in self.players)
                         self.players[player.player_number].position.set(player.x, player.y);
-                    //self.players[player.player_number].y = player.y;
                 });
             }
 
