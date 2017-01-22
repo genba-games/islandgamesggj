@@ -6,6 +6,7 @@ var playState = function () { };
 var initial_position = undefined;
 playState.prototype =
     {
+        self: this,
         // Setup functions
         preload: function () {
             // Function called first to load all the assets
@@ -18,19 +19,17 @@ playState.prototype =
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
             game.load.audio('main_audio', 'src/audio/test.mp3')
             game.load.spritesheet('kaboom', 'src/graphics/explode.png', 128, 128);
-            
+
             this.initial_position = {
-                1: {x: game.width/2, y: 0},
-                2: {x: game.width, y: game.height/2},
-                3: {x: game.width/2, y: game.height},
-                4: {x: 0, y: game.height/2},
+                1: { x: game.width / 2, y: 0 },
+                2: { x: game.width, y: game.height / 2 },
+                3: { x: game.width / 2, y: game.height },
+                4: { x: 0, y: game.height / 2 },
             }
 
             this.player_number = socket.player_number;
             this.players = {};
         },
-        
-
         create: function () {
             /// Define controllers
             // Create controllers for other players
@@ -38,35 +37,24 @@ playState.prototype =
             addNetworkController(3);
             addNetworkController(4);
 
-            // networking ============================================
-
-            if( this.isMaster() ){
-                socket.on('player connected', function(new_player){
-                    this.addPlayer(new_player);
-                    socket.emit('player info', new_player);
-                });
-            }
-            
-            socket.on('player info', function(player){
-                this.addPlayer(player);
-            });
             /// Setup controls
             var controls = undefined;
             // Host
-            if (this.isMaster()) {
+            if (isMaster()) {
                 controls = Controller();
-            } 
+            }
             // Player
-            else if (this.isPlayer()) {
-                controls = networkControllers[player_number];
+            else if (isPlayer()) {
+                controls = networkControllers[this.player_number];
             }
             // Spectator
             else {
                 controls = undefined;
             }
 
-            // Networking
-            socket.on('player key', function(key) {
+            /// Networking
+            // Controller events
+            socket.on('player key', function (key) {
                 player_number = key['player_number'];
                 key = key['key']
                 event = key['key']
@@ -77,17 +65,21 @@ playState.prototype =
                         networkControllers[player_number][key] = false;
                 }
             });
-            socket.on('player connected', function (new_player) {
-                IslandFactory(
-                    islands,
-                    initial_position[new_player.player_number].x,
-                    initial_position[new_player.player_number].y,
-                    'island_placeholder',
-                    'wave'
-                );
-            });
 
-            socket.on('player update', function(player){
+            // Player events
+            if (isMaster()) {
+                socket.on('player connected', function (new_player) {
+                    self.addPlayer(new_player);
+                    socket.emit('player info', new_player);
+                });
+            }
+            else {
+                socket.on('player info', function (player) {
+                    if (isNotMe(player.player_number))
+                        self.addPlayer(player);
+                });
+            }
+            socket.on('player update', function (player) {
                 // update the position of the player
                 this.players[player.player_number].x = player.x;
                 this.players[player.player_number].y = player.y;
@@ -106,29 +98,31 @@ playState.prototype =
             mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
             mute_key.onDown.add(mute, this);
 
-            //Group def
+            // Group definitions
             islands = game.add.group();
-            var island = IslandFactory(islands, initial_position[socket.player_number].x, initial_position[socket.player_number].y, 'island_placeholder', 'wave', gondrols);
-                
-            // add myself to the list of players
-            this.players[this.player_number] = island;
-
-
-            //IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
-
             powerups = game.add.group()
 
+            // Create own island
+            var island = IslandFactory(
+                islands,
+                this.initial_position[socket.player_number].x,
+                this.initial_position[socket.player_number].y,
+                'island_placeholder',
+                'wave',
+                controls
+            );
+            // Add myself to the list of players
+            this.players[this.player_number] = island;
 
-            //  The score
+            // Score
             this.scoreString = 'Score : ';
             this.scoreText = game.add.text(10, 10, this.scoreString + this.score, { font: '34px Arial', fill: '#fff' });
 
-            //  Lives
+            // Lives
             lives = game.add.group();
             game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
 
-
-            //  An explosion pool
+            // Explosion pool
             explosions = game.add.group();
             explosions.createMultiple(300, 'kaboom');
             explosions.forEach(setupInvader, this);
@@ -138,7 +132,6 @@ playState.prototype =
                 island.animations.add('kaboom');
             }
         },
-
         update: function () {
             // Collision
             game.physics.arcade.collide(islands, islands);
@@ -152,19 +145,20 @@ playState.prototype =
             data = { x: island.x, y: island.y };
             socket.emit('sync', data);
         },
-        //Helper Functions
-        addPlayer: function (player){
+        // Helper Functions
+        addPlayer: function (player) {
             var new_island = IslandFactory(
-                islands, 
-                initial_position[player.player_number].x, 
-                initial_position[player.player_number].y, 
-                'island_placeholder', 
+                islands,
+                this.initial_position[player.player_number].x,
+                this.initial_position[player.player_number].y,
+                'island_placeholder',
                 'wave'
             );
             //add the new player to the list of players
             this.players[player.player_number] = new_island;
         },
     };
+
 
 function islandBulletCollisionHandler(island, bullet) {
     //  When a bullet hits an alien we kill them both
