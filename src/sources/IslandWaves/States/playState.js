@@ -66,7 +66,7 @@ playState.prototype =
                         // Update existing players
                         if (p.player_number in self.players){
                             self.players[p.player_number].position.set(p.x, p.y);
-                            updateNetworkController(data.player_number, data.controller)
+                            updateNetworkController(p.player_number, p.controller)
                         }
                     }
                 });
@@ -242,7 +242,10 @@ playState.prototype =
                 data.x = player.x;
                 data.y = player.y;
                 data.controller = {
-                    pointer: player.controls.pointer,
+                    pointer: {
+                        worldX: player.controls.pointer.worldX,
+                        worldY: player.controls.pointer.worldY,
+                    },
                     keys: {
                         shoot: player.controls.keys[controllerKeys.SHOOT]
                     }
