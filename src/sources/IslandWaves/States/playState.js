@@ -73,6 +73,7 @@ playState.prototype =
                         // Update existing players
                         if (p.player_number in self.players){
                             self.players[p.player_number].position.set(p.x, p.y);
+                            self.players[p.player]
                         }
                     }
                 });
@@ -246,6 +247,12 @@ playState.prototype =
                 data.player_number = player_number;
                 data.x = player.x;
                 data.y = player.y;
+                data.controls = {
+                    pointer: player.controls.pointer,
+                    keys: {
+                        shoot: player.controls.keys.shoot
+                    }
+                };
                 info.push(data);
             }
             return info;
