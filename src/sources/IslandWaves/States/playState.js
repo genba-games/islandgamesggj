@@ -44,9 +44,22 @@ playState.prototype =
                     ]
                 };
 
+            // Scoring def    
+            var starfield;
+            this.score = 0;
+            this.scoreString = '';
+            this.scoreText;
+            var lives;    
+            
+            
+            //  Music
             music = game.add.audio('main_audio');
             music.play();
 
+            mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
+            mute_key.onDown.add(mute, this);
+
+            //Group def
             islands = game.add.group();
             IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
             IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
@@ -54,23 +67,25 @@ playState.prototype =
             powerups = game.add.group()
             
 
-            function setupInvader (island) {
+            //  The score
+            this.scoreString = 'Score : ';
+             this.scoreText = game.add.text(10, 10,  this.scoreString +  this.score, { font: '34px Arial', fill: '#fff' });
 
-                island.anchor.x = 0.5;
-                island.anchor.y = 0.5;
-                island.animations.add('kaboom');
+            //  Lives
+            lives = game.add.group();
+            game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
 
-            }
 
             //  An explosion pool
             explosions = game.add.group();
             explosions.createMultiple(30, 'kaboom');
             explosions.forEach(setupInvader, this);
-
-            mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
-            mute_key.onDown.add(mute, this);
-
-            powerups = game.add.group()
+            function setupInvader (island) {
+                island.anchor.x = 0.5;
+                island.anchor.y = 0.5;
+                island.animations.add('kaboom');
+            }
+        
         },
 
         update: function () {
@@ -80,13 +95,15 @@ playState.prototype =
                 //alien.kill();
 
                 //  Increase the score
-                //score += 20;
-                //scoreText.text = scoreString + score;
+                this.score += 1;
+                this.scoreText.text = this.scoreString + this.score;
 
                 //  And create an explosion :)
                 var explosion = explosions.getFirstExists(false);
                 explosion.reset(bullet.x, bullet.y);
                 explosion.play('kaboom', 30, false, true);
+
+
               
             }
           
