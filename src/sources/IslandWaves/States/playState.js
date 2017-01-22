@@ -53,11 +53,7 @@ playState.prototype =
                 });
 
                 socket.on('player update',function(data) {
-                    var c = {
-                        keys: data.keys,
-                        pointer: data.pointer,
-                    }
-                    updateNetworkController(data.player_number, c)
+                    updateNetworkController(data.player_number, data.players[0].controller)
                 });
             }
             // Slaves 
