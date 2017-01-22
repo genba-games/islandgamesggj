@@ -13,7 +13,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	randomColor = function (min, max) {
 		return Math.random() * (max - min) + min
 	};
-	island.tint = randomColor(0x888888 << 0, 0xFFFFFF << 0);
+	island.tint = randomColor(0xAAAAAA << 0, 0xFFFFFF << 0);
 	island.controls = controls
 	//island.animations.add('kaboom');
 	island.keyPressed = function (key) {

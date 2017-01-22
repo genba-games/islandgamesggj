@@ -9,8 +9,12 @@ playState.prototype =
             game.load.image('wave_placeholder2', 'src/graphics/bomb.png')
             game.load.image('wave_placeholder3', 'src/graphics/beach_ball.png')
             game.load.image('background', 'src/graphics/water.png');
-            game.load.image('powerup_coconut', 'src/graphics/stupid coconut.png')
-            game.load.image('powerup_hermit', 'src/graphics/hermit.png')
+
+            game.load.image('PUbig', 'src/graphics/PU bigger size.png')
+            game.load.image('PUsmall', 'src/graphics/PU smaller size.png')
+            game.load.image('PUslow', 'src/graphics/PU bigger size.png')
+            game.load.image('PUspeed', 'src/graphics/PU bigger size.png')
+            game.load.image('PUangery', 'src/graphics/hermit.png')
 
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
             game.load.audio('main_audio', 'src/audio/battle.wav')
@@ -67,7 +71,7 @@ playState.prototype =
             powerupIsland = game.add.group()
             IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
             IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
-            PowerUpFactory(powerupIsland, 'powerup_coconut')
+            PowerUpFactory(powerupIsland)
 
 
             //  The score
