@@ -1,4 +1,4 @@
-// Creates a new 'play' state that wil contain the game
+// The play state contains the game
 var playState = function () { };
 
 // configurations depending on who I am
@@ -6,6 +6,7 @@ var playState = function () { };
 var initial_position = undefined;
 playState.prototype =
     {
+        // Setup functions
         preload: function () {
             // Function called first to load all the assets
             game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
@@ -17,79 +18,76 @@ playState.prototype =
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
             game.load.audio('main_audio', 'src/audio/test.mp3')
             game.load.spritesheet('kaboom', 'src/graphics/explode.png', 128, 128);
-            
+
             initial_position = {
-                1: {x: game.width/2, y: 0},
-                2: {x: game.width, y: game.height/2},
-                3: {x: game.width/2, y: game.height},
-                4: {x: 0, y: game.height/2},
+                1: { x: game.width / 2, y: 0 },
+                2: { x: game.width, y: game.height / 2 },
+                3: { x: game.width / 2, y: game.height },
+                4: { x: 0, y: game.height / 2 },
             }
 
         },
 
         create: function () {
-            game.physics.startSystem(Phaser.Physics.ARCADE);
-            gondrols =
-                {
-                    'up':
-                    [
-                        Phaser.Keyboard.W,
-                        Phaser.Keyboard.UP
-                    ],
-                    'down':
-                    [
-                        Phaser.Keyboard.S,
-                        Phaser.Keyboard.DOWN
-                    ],
-                    'left':
-                    [
-                        Phaser.Keyboard.A,
-                        Phaser.Keyboard.LEFT
-                    ],
-                    'right':
-                    [
-                        Phaser.Keyboard.D,
-                        Phaser.Keyboard.RIGHT
-                    ],
-                    'shoot': [
-                        Phaser.Keyboard.SPACEBAR
-                    ]
-                };
+            /// Define controllers
+            // Create controllers for other players
+            addNetworkController(2);
+            addNetworkController(3);
+            addNetworkController(4);
 
-            // networking
-            socket.on('player connected', function(new_player){
+            /// Setup controls
+            var controls = undefined;
+            // Host
+            if (this.isMaster()) {
+                controls = Controller();
+            } 
+            // Player
+            else if (this.isPlayer()) {
+                controls = networkControllers[player_number];
+            }
+            // Spectator
+            else {
+                controls = undefined;
+            }
+
+            // Networking
+            socket.on('player key', function(key) {
+                player_number = key['player_number'];
+                key = key['key']
+                event = key['key']
+                if (isPlayer(player_number)) {
+                    if (event == networkKeyEvent.KEYDOWN)
+                        networkControllers[player_number][key] = true;
+                    else if (event == networkKeyEvent.KEYUP)
+                        networkControllers[player_number][key] = false;
+                }
+            });
+            socket.on('player connected', function (new_player) {
                 IslandFactory(
-                    islands, 
-                    initial_position[new_player.player_number].x, 
-                    initial_position[new_player.player_number].y, 
-                    'island_placeholder', 
+                    islands,
+                    initial_position[new_player.player_number].x,
+                    initial_position[new_player.player_number].y,
+                    'island_placeholder',
                     'wave'
                 );
             });
 
-
-            socket.on('player key', function(player_key){
-                
-            });
-
-            // Scoring def    
-            var starfield;
+            // Scoring definitions
             this.score = 0;
             this.scoreString = '';
             this.scoreText;
             var lives;
 
-
             //  Music
             music = game.add.audio('main_audio');
             music.play();
-
+            // Music controls
             mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
             mute_key.onDown.add(mute, this);
 
             //Group def
             islands = game.add.group();
-            var island = IslandFactory(islands, initial_position[socket.player_number].x, initial_position[socket.player_number].y, 'island_placeholder', 'wave', gondrols);
+            var island = IslandFactory(islands, initial_position[socket.player_number].x, initial_position[socket.player_number].y, 'island_placeholder', 'wave', controls);
             //IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
 
             powerups = game.add.group()
@@ -116,7 +114,7 @@ playState.prototype =
         },
 
         update: function () {
-            // Collision          
+            // Collision
             game.physics.arcade.collide(islands, islands);
             for (var i in islands.children) {
                 game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
@@ -125,7 +123,7 @@ playState.prototype =
             // Networking
             // Connection is contained in the `conn` object.
             // socket.on()
-            data = {x:island.x, y:island.y};
+            data = { x: island.x, y: island.y };
             socket.emit('sync', data);
         },
     };

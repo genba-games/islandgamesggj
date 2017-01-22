@@ -16,13 +16,6 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	island.tint = randomColor(0x888888 << 0, 0xFFFFFF << 0);
 
 	island.controls = controls;
-	//island.animations.add('kaboom');
-	island.keyPressed = function (key) {
-		for (i in key)
-			if (game.input.keyboard.isDown(key[i]))
-				return true;
-		return false;
-	}
 
 	// Physics
 	game.physics.arcade.enable([island]);
@@ -52,19 +45,19 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 
 		/// Input
 		if (this.controls == undefined) return;
-		if (this.keyPressed(this.controls.shoot)) {
+		if (keyPressed(this.controls.shoot)) {
 			this.weapon.fire();
 		}
 		// Acceleration
-		if (this.keyPressed(this.controls.up))
+		if (keyPressed(this.controls.up))
 			this.body.acceleration.y = -this.acceleration;
-		else if (this.keyPressed(this.controls.down))
+		else if (keyPressed(this.controls.down))
 			this.body.acceleration.y = this.acceleration;
 		else
 			this.body.acceleration.y = 0;
-		if (this.keyPressed(this.controls.left))
+		if (keyPressed(this.controls.left))
 			this.body.acceleration.x = -this.acceleration;
-		else if (this.keyPressed(this.controls.right))
+		else if (keyPressed(this.controls.right))
 			this.body.acceleration.x = this.acceleration;
 		else
 			this.body.acceleration.x = 0;
