@@ -47,10 +47,12 @@ playState.prototype =
             // Player events
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
-                    self.addPlayer(new_player.player_number);
+                    if (self.players[new_player.player_number] === undefined)
+                        self.addPlayer(new_player.player_number);
                 });
 
                 socket.on('player update',function(data){
+                    console.log(networkControllers);
                     for(var k in data.keys){
                         networkControllers[data.player_number][k] = data.keys[k];
                     }

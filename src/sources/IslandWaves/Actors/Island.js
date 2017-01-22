@@ -8,23 +8,23 @@
 IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	island = group.create(x, y, sprite);
 	island.anchor.set(0.5);
-	island.waveSprite = waveSprite
+	island.waveSprite = waveSprite;
 
 	randomColor = function (min, max) {
 		return Math.random() * (max - min) + min
 	};
 	// island.tint = randomColor(0xAAAAAA << 0, 0xFFFFFF << 0);
 
-	island.controls = controls
+	island.controls = controls;
 	island.keyPressed = function (key) {
 		for (i in key)
 			if (game.input.keyboard.isDown(key[i]))
 				return true;
 		return false;
 	}
-	island.cooldown = false
-	island.invulnerable = false
-	island.health = 2500
+	island.cooldown = false;
+	island.invulnerable = false;
+	island.health = 2500;
 	// Physics
 	game.physics.arcade.enable([island]);
 	// s.body.setCircle(25);
@@ -58,13 +58,13 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		if (this.controls == undefined) return;
 		if (this.keyPressed(this.controls.shoot)) {
 			callback = function () {
-				this.cooldown = false
+				this.cooldown = false;
 			};
 			if (!this.cooldown) {
 				this.weapon.fire();
 				game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity);
 				game.time.events.add(this.weapon.fireRate, callback, this)
-				this.cooldown = true
+				this.cooldown = true;
 			}
 		}
 		// Acceleration
