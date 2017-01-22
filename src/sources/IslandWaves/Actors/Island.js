@@ -31,14 +31,14 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	island.body.maxVelocity = 300;
 	island.body.drag.x = 1000
 	island.body.drag.y = 1000
-	
-	island.acceleration = 1200;
+
+	island.powerUpSpeed = 1;
 
 	//weapon
 	island.weapon = WaveFactory(island, island.waveSprite)
 	island.update = function () {
-		this.rotation = game.physics.arcade.angleToPointer(this)
-		
+		// this.rotation = game.physics.arcade.angleToPointer(this)
+
 		/// Boundaries
 		// Width
 		if (this.position.x > game.width + this.width / 2)
@@ -55,21 +55,21 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		if (this.controls == undefined) return;
 		if (this.keyPressed(this.controls.shoot)) {
 			this.weapon.fire();
-			game.physics.arcade.moveToPointer(this,-300)
+			game.physics.arcade.velocityFromAngle(this.angle, - 150, this.body.velocity);
 		}
 		// Acceleration
 		if (this.keyPressed(this.controls.up))
-			this.body.acceleration.y = -this.acceleration;
+			game.physics.arcade.velocityFromAngle(this.angle, 300, this.body.velocity);
 		else if (this.keyPressed(this.controls.down))
-			this.body.acceleration.y = this.acceleration;
+			game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity);
 		else
-			this.body.acceleration.y = 0;
+			this.body.acceleration = 0;
 		if (this.keyPressed(this.controls.left))
-			this.body.acceleration.x = -this.acceleration;
+			this.body.angularAcceleration = -200 * this.powerUpSpeed
 		else if (this.keyPressed(this.controls.right))
-			this.body.acceleration.x = this.acceleration;
+			this.body.angularAcceleration = 200 * this.powerUpSpeed
 		else
-			this.body.acceleration.x = 0;
+			this.body.angularVelocity = 0;
 	}
 
 	return island;
