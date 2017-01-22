@@ -34,7 +34,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	//weapon
 	island.weapon = WaveFactory(island, island.waveSprite);
 	island.update = function () {
-		this.rotation = game.physics.arcade.angleToPointer(this)
+		this.rotation = game.physics.arcade.angleToPointer(this, this.controls.pointer)
 
 		/// Boundaries
 		// Width
@@ -50,7 +50,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 
 		/// Input
 		if (this.controls == undefined) return;
-		if (keyPressed(this.controls.shoot)) {
+		if (keyPressed(this.controls, controllerKeys.SHOOT)) {
 			callback = function () {
 				this.cooldown = false;
 			};
@@ -62,15 +62,15 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 			}
 		}
 		// Acceleration
-		if (keyPressed(this.controls.up))
+		if (keyPressed(this.controls, controllerKeys.UP))
 			this.body.acceleration.y = -this.acceleration;
-		else if (keyPressed(this.controls.down))
+		else if (keyPressed(this.controls, controllerKeys.DOWN))
 			this.body.acceleration.y = this.acceleration;
 		else
 			this.body.acceleration.y = 0;
-		if (keyPressed(this.controls.left))
+		if (keyPressed(this.controls, controllerKeys.LEFT))
 			this.body.acceleration.x = -this.acceleration;
-		else if (keyPressed(this.controls.right))
+		else if (keyPressed(this.controls, controllerKeys.RIGHT))
 			this.body.acceleration.x = this.acceleration;
 		else
 			this.body.acceleration.x = 0;

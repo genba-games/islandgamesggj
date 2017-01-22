@@ -8,7 +8,6 @@ menuState.prototype =
             game.load.image('title_screen', 'src/graphics/title_screen.png');
             game.load.spritesheet('logo', 'src/graphics/logoSprite.png', 370, 388);
             game.load.audio('beach_sound', 'src/audio/beach.wav')
-
         },
 
         create: function () {

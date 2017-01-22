@@ -51,23 +51,26 @@ playState.prototype =
                         self.addPlayer(new_player.player_number);
                 });
 
-                socket.on('player update',function(data){
+                socket.on('player update',function(data) {
+                    // Update network controllers
                     if(!isMe(data.player_number)){
-                        for(var k in data.keys){
-                            networkControllers[data.player_number][k] = data.keys[k];
+                        keys = networkControllers[data.player_number].keys;
+                        for(var k in data.keys) {
+                            keys[k] = data.keys[k];
                         }
+                        networkControllers[data.player_number].pointer = data.pointer;
                     }
                 });
             } else {
                 socket.on('player update', function (data) {
-                    // update the position of the player
+                    // Update the position of the player
                     for(var p in data.players){
                         p = data.players[p];
-                        // if we don't have this player... add it
+                        // Add the player if it's new
                         if (self.players[p.player_number] === undefined) {
                             self.addPlayer(p.player_number);
                         }
-                        // update the players that we do have
+                        // Update existing players
                         if (p.player_number in self.players){
                             self.players[p.player_number].position.set(p.x, p.y);
                         }
@@ -176,18 +179,27 @@ playState.prototype =
             game.physics.arcade.overlap(islands, powerupIsland, this.powerUpCallback);
 
             /// Networking
+            // Instance information
             data = {
                 x: island.x,
                 y: island.y
             };
+            // Controller
             if (!isMaster() && isPlayer()) {
+                // Keys
                 keys = {};
                 var controller = this.players[this.player_number].controls;
-                for (var k in controller) {
-                    v = controller[k];
-                    keys[k] = keyPressed(v);
+                for (var k in controller.keys) {
+                    keys[k] = keyPressed(controller, k);
                 }
                 data['keys'] = keys;
+                // Controller
+                pointer = this.players[this.player_number].controls.pointer;
+                pointer = {
+                    worldX: pointer.worldX,
+                    worldY: pointer.worldY,
+                };
+                data['pointer'] = pointer;
             }
             if(isMaster()){
                 data.players = this.getPlayersInfo();

@@ -5,7 +5,8 @@ var networkKeyEvent = {
     KEYDOWN: 'key down',
 }
 
-function keyPressed (key) {
+function keyPressed (controller, key) {
+    key = controller.keys[key];
     if (key === true) return true;
     if (key === false) return false;
     for (i in key)
@@ -30,15 +31,29 @@ function emitKeyReleased(key) {
     socket.emit('player key', data);
 }
 
+function createNetworkPointer(x, y) {
+    pointer = {
+        worldX: x,
+        worldY: y,
+    }
+    return pointer
+}
+
 function addNetworkController(player_number) {
     if (!isPlayer(player_number)) return;
     nc = Controller();
-    // Set all controls to `false` initially
-    for (var key in nc) {
-        if (nc.hasOwnProperty(key)) {
-            nc[key] = false;
+    
+    /// Initial settings
+    // Set all keys to `false` initially
+    keys = nc.keys
+    for (var key in keys) {
+        if (keys.hasOwnProperty(key)) {
+            keys[key] = false;
         }
     }
+    // Set pointer to the center of the screen
+    nc['pointer'] = createNetworkPointer(game.width / 2, game.height / 2);
+
     // Add to network controllers
     networkControllers[player_number] = nc;
 
