@@ -58,7 +58,7 @@ playState.prototype =
                             keys: data.keys,
                             pointer: data.pointer,
                         }
-                        updateNetworkController(p.player_number, p.controller)
+                        updateNetworkController(c.player_number, c.controller)
                     }
                 });
             }
