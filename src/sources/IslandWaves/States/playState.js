@@ -256,7 +256,7 @@ playState.prototype =
                         worldY: player.controls.pointer.worldY,
                     },
                     keys: {
-                        shoot: player.controls.keys[controllerKeys.SHOOT]
+                        shoot: keyPressed(player.controls.keys[controllerKeys.SHOOT])
                     }
                 };
                 info.push(data);
