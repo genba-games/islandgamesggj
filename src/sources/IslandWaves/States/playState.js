@@ -15,8 +15,17 @@ playState.prototype =
             game.load.image('wave_placeholder3', 'src/graphics/beach_ball.png')
             game.load.image('background', 'src/graphics/water.png');
 
+            game.load.image('crab_island', 'src/graphics/crab island.png')
+            game.load.image('treasure_island', 'src/graphics/treasure chest island.png')
+
+            game.load.image('PUbig', 'src/graphics/PU bigger size.png')
+            game.load.image('PUsmall', 'src/graphics/PU smaller size.png')
+            game.load.image('PUslow', 'src/graphics/PU bigger size.png')
+            game.load.image('PUspeed', 'src/graphics/PU bigger size.png')
+            game.load.image('PUangery', 'src/graphics/hermit.png')
+
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
-            game.load.audio('main_audio', 'src/audio/test.mp3')
+            game.load.audio('main_audio', 'src/audio/battle.wav')
             game.load.spritesheet('kaboom', 'src/graphics/explode.png', 128, 128);
 
             this.initial_position = {
@@ -30,6 +39,92 @@ playState.prototype =
             this.players = {};
         },
         create: function () {
+            game.add.tileSprite(0, 0, 800, 600, 'background')
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+            gondrols =
+                {
+                    'up':
+                    [
+                        Phaser.Keyboard.W,
+                        Phaser.Keyboard.UP
+                    ],
+                    'down':
+                    [
+                        Phaser.Keyboard.S,
+                        Phaser.Keyboard.DOWN
+                    ],
+                    'left':
+                    [
+                        Phaser.Keyboard.A,
+                        Phaser.Keyboard.LEFT
+                    ],
+                    'right':
+                    [
+                        Phaser.Keyboard.D,
+                        Phaser.Keyboard.RIGHT
+                    ],
+                    'shoot': [
+                        Phaser.Keyboard.SPACEBAR
+                    ]
+                };
+            winni1 =
+                {
+                    'up':
+                    [
+                        Phaser.Keyboard.Q
+                    ],
+                    'down':
+                    [
+                        Phaser.Keyboard.R
+                    ],
+                    'left':
+                    [
+                        Phaser.Keyboard.W
+                    ],
+                    'right':
+                    [
+                        Phaser.Keyboard.E
+                    ],
+                    'shoot': [
+                        Phaser.Keyboard.T,
+                        Phaser.Keyboard.Y,
+                        Phaser.Keyboard.U,
+                        Phaser.Keyboard.I,
+                        Phaser.Keyboard.O,
+                        Phaser.Keyboard.P,
+                        Phaser.Keyboard.A,
+                        Phaser.Keyboard.S,
+                    ]
+                };
+            winni2 =
+                {
+                    'up':
+                    [
+                        Phaser.Keyboard.F
+                    ],
+                    'down':
+                    [
+                        Phaser.Keyboard.J
+                    ],
+                    'left':
+                    [
+                        Phaser.Keyboard.G
+                    ],
+                    'right':
+                    [
+                        Phaser.Keyboard.H
+                    ],
+                    'shoot': [
+                        Phaser.Keyboard.K,
+                        Phaser.Keyboard.L,
+                        Phaser.Keyboard.Z,
+                        Phaser.Keyboard.X,
+                        Phaser.Keyboard.C,
+                        Phaser.Keyboard.V,
+                        Phaser.Keyboard.B,
+                        Phaser.Keyboard.N
+                    ]
+                };
             self = this;
             /// Networking
             // Player events
@@ -71,6 +166,7 @@ playState.prototype =
 
             //  Music
             music = game.add.audio('main_audio');
+            music.loop = true;
             music.play();
             // Music controls
             mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -78,7 +174,9 @@ playState.prototype =
 
             // Group definitions
             islands = game.add.group();
-            powerups = game.add.group();
+            powerupIsland = game.add.group()
+            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'crab_island', 'wave', winni1);
+            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'treasure_island', 'wave', winni2);
 
             // Create own island
             this.addPlayer(this.player_number);
@@ -101,12 +199,64 @@ playState.prototype =
                 island.animations.add('kaboom');
             }
         },
+        powerUpCallback: function (island, pUp) {
+            if (pUp.config.tint) {
+                var tintOrig = island.tint;
+                island.tint = pUp.config.tint;
+            }
+            if (pUp.config.add) {
+                callback = function () {
+                    island.tint = tintOrig
+                    for (var conf in pUp.config.add) {
+                        valueBuff = _.get(island, conf)
+                        value = valueBuff - pUp.config.add[conf]
+                        _.set(island, conf, value)
+                    };
+                };
+                for (var conf in pUp.config.add) {
+                    valueOrig = _.get(island, conf)
+                    value = valueOrig + pUp.config.add[conf]
+                    _.set(island, conf, value)
+                };
+            };
+            if (pUp.config.scale) {
+                island.scale.x *= pUp.config.scale
+                island.scale.y *= pUp.config.scale
+                callback = function () {
+                    island.scale.x = 1
+                    island.scale.y = 1
+                }
+            }
+            game.time.events.add(Phaser.Timer.SECOND * pUp.config.time, callback, this);
+            pUp.destroy()
+        },
+        bulletIslandCollitionCallback: function (island, bullet) {
+            callback = function () {
+                island.invulnerable = false
+                island.alpha = 1
+            };
+            if (!island.invulnerable) {
+                island.alpha = 0.5
+                island.health -= Math.abs(bullet.body.velocity.x) + Math.abs(bullet.body.velocity.y)
+                if (0 > island.health) {
+                    island.kill()
+                };
+                island.invulnerable = true
+                game.time.events.add(Phaser.Timer.SECOND * 2, callback, this)
+            };
+        },
         update: function () {
             // Collision
             game.physics.arcade.collide(islands, islands);
+
             for (var i in islands.children) {
-                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
+                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, this.bulletIslandCollitionCallback);
+                for (var j in islands.children) {
+                    game.physics.arcade.collide(islands.children[i].weapon.bullets, islands.children[j].weapon.bullets);
+
+                }
             }
+            game.physics.arcade.overlap(islands, powerupIsland, this.powerUpCallback);
 
             /// Networking
             data = {

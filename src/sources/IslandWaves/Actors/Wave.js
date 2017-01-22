@@ -9,10 +9,12 @@ WaveFactory = function (object, sprite) {
 
     wave.addBulletAnimation('wave', [0, 1, 2, 3, 4], 12, true);
 
-    wave.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    wave.bulletKillType = Phaser.Weapon.KILL_LIFESPAN;
+    wave.bulletLifespan = 1300;
     wave.bulletSpeed = 600;
-    wave.fireRate = 100;
+    wave.fireRate = 1000;
+    wave.bulletWorldWrap=true
+    wave.damage = 10
     wave.trackSprite(object, 0, 0, true);
-
     return wave;
 }
