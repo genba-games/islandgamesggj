@@ -8,12 +8,15 @@ menuState.prototype =
             game.load.image('title_screen', 'src/graphics/title_screen.png');
             game.load.spritesheet('logo', 'src/graphics/logoSprite.png', 370, 388);
             game.load.audio('beach_sound', 'src/audio/beach.wav')
+            game.load.image('hermit_crab', 'src/graphics/hermit.png')
         },
 
         create: function () {
             game.add.plugin(PhaserInput.Plugin);
             // Set background
             game.add.sprite(0, 0, 'title_screen');
+            crab = game.add.sprite(570, 330, 'hermit_crab');
+            
 
             music = game.add.audio('beach_sound');
             music.loop = true;
@@ -36,7 +39,7 @@ menuState.prototype =
                 placeHolderColor: '#000000',
             });
         },
-        update: function(){
+        update: function () {
 
         },
         /**
