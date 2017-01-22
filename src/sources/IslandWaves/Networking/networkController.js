@@ -66,7 +66,7 @@ function updateNetworkController(player_number, controller) {
         keys = networkControllers[player_number].keys;
         if (keys) {
             for (var k in controller.keys) {
-                keys[k] = controller.keys[k];
+                keys[k] = keyPressed(controller, k);
             }
         }
         networkControllers[player_number].pointer = controller.pointer;
