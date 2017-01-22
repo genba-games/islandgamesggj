@@ -18,14 +18,17 @@ playState.prototype =
             game.load.audio('main_audio', 'src/audio/test.mp3')
             game.load.spritesheet('kaboom', 'src/graphics/explode.png', 128, 128);
             
-            initial_position = {
+            this.initial_position = {
                 1: {x: game.width/2, y: 0},
                 2: {x: game.width, y: game.height/2},
                 3: {x: game.width/2, y: game.height},
                 4: {x: 0, y: game.height/2},
             }
 
+            this.player_number = socket.player_number;
+            this.players = {};
         },
+        
 
         create: function () {
             game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -56,17 +59,24 @@ playState.prototype =
                     ]
                 };
 
-            // networking
-            socket.on('player connected', function(new_player){
-                IslandFactory(
-                    islands, 
-                    initial_position[new_player.player_number].x, 
-                    initial_position[new_player.player_number].y, 
-                    'island_placeholder', 
-                    'wave'
-                );
+            // networking ============================================
+
+            if( this.isMaster() ){
+                socket.on('player connected', function(new_player){
+                    this.addPlayer(new_player);
+                    socket.emit('player info', new_player);
+                });
+            }
+            
+            socket.on('player info', function(player){
+                this.addPlayer(player);
             });
 
+            socket.on('player update', function(player){
+                // update the position of the player
+                this.players[player.player_number].x = player.x;
+                this.players[player.player_number].y = player.y;
+            });
 
             socket.on('player key', function(player_key){
                 
@@ -90,6 +100,11 @@ playState.prototype =
             //Group def
             islands = game.add.group();
             var island = IslandFactory(islands, initial_position[socket.player_number].x, initial_position[socket.player_number].y, 'island_placeholder', 'wave', gondrols);
+                
+            // add myself to the list of players
+            this.players[this.player_number] = island;
+
+
             //IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
 
             powerups = game.add.group()
@@ -127,6 +142,18 @@ playState.prototype =
             // socket.on()
             data = {x:island.x, y:island.y};
             socket.emit('sync', data);
+        },
+        //Helper Functions
+        addPlayer: function (player){
+            var new_island = IslandFactory(
+                islands, 
+                initial_position[player.player_number].x, 
+                initial_position[player.player_number].y, 
+                'island_placeholder', 
+                'wave'
+            );
+            //add the new player to the list of players
+            this.players[player.player_number] = new_island;
         },
     };
 

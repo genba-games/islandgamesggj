@@ -44,12 +44,9 @@ io.on('connection', function(socket){
         socket.emit('session', response);
         io.emit('player connected',response);
     });
-    socket.on('sync', function(msg){
+    socket.on('sync', function(response){
+        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
         io.emit('sync',msg);
-    });
-    socket.on('chat message', function(msg){
-        console.log('message: ' + msg);
-        io.emit('chat message', msg);
     });
 });
 
