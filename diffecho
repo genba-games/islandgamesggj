@@ -1,3 +1,6 @@
+diff --git a/diffecho b/diffecho
+new file mode 100644
+index 0000000..e69de29
 diff --git a/server/index.js b/server/index.js
 index dc960d4..021aa65 100644
 --- a/server/index.js
@@ -222,10 +225,10 @@ index 1c83dff..7c0d657 100644
  }
 \ No newline at end of file
 diff --git a/src/sources/IslandWaves/States/playState.js b/src/sources/IslandWaves/States/playState.js
-index 2dfcaa7..56588bd 100644
+index 2dfcaa7..66bc9ba 100644
 --- a/src/sources/IslandWaves/States/playState.js
 +++ b/src/sources/IslandWaves/States/playState.js
-@@ -28,72 +28,28 @@ playState.prototype =
+@@ -28,45 +28,10 @@ playState.prototype =
  
              this.player_number = socket.player_number;
              this.players = {};
@@ -271,46 +274,7 @@ index 2dfcaa7..56588bd 100644
              // Player events
              if (isMaster()) {
                  socket.on('player connected', function (new_player) {
--                    self.addPlayer(new_player);
--                    console.log('emit player info',self.getPlayersInfo());
--                    self.gottaSendPlayersInfo = 60;
--                });
--            } else {
--                console.log('FUCK');
--                socket.on('asd', function (players) {
--                    console.log('received player info', players);
--                    for(var i=0; i < players.data.length; i++){
--                        var player = players.data[i];
--                        if (isNotMe(player.player_number)){
--                            console.log('updates because of player info');
--                            self.addPlayer(player);
--                        }
--                    }
-+                    self.addPlayer(new_player.player_number);
-+                    socket.emit('player info', new_player);
-                 });
--
--                socket.on('player update', function (player) {
--                    // update the position of the player
--                    if(player.player_number in self.players)
--                        self.players[player.player_number].position.set(player.x, player.y);
--                    //self.players[player.player_number].y = player.y;
-+            }
-+            else {
-+                socket.on('player info', function (player) {
-+                    if (isNotMe())
-+                        self.addPlayer(player.player_number);
-                 });
-             }
-+            socket.on('player update', function (player) {
-+                // update the position of the player
-+                this.players[player.player_number].x = player.x;
-+                this.players[player.player_number].y = player.y;
-+            });
- 
-             // Scoring definitions
-             this.score = 0;
-@@ -110,21 +66,10 @@ playState.prototype =
+@@ -110,21 +75,10 @@ playState.prototype =
  
              // Group definitions
              islands = game.add.group();
@@ -334,7 +298,7 @@ index 2dfcaa7..56588bd 100644
  
              // Score
              this.scoreString = 'Score : ';
-@@ -137,8 +82,8 @@ playState.prototype =
+@@ -137,8 +91,8 @@ playState.prototype =
              // Explosion pool
              explosions = game.add.group();
              explosions.createMultiple(300, 'kaboom');
@@ -345,7 +309,7 @@ index 2dfcaa7..56588bd 100644
                  island.anchor.x = 0.5;
                  island.anchor.y = 0.5;
                  island.animations.add('kaboom');
-@@ -151,45 +96,46 @@ playState.prototype =
+@@ -151,45 +105,46 @@ playState.prototype =
                  game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
              }
  

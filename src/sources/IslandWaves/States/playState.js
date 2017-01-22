@@ -36,16 +36,16 @@ playState.prototype =
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
                     self.addPlayer(new_player);
-                    console.log('emit player info',self.getPlayersInfo());
+                    console.log('emit player info', self.getPlayersInfo());
                     self.gottaSendPlayersInfo = 60;
                 });
             } else {
                 console.log('FUCK');
                 socket.on('asd', function (players) {
                     console.log('received player info', players);
-                    for(var i=0; i < players.data.length; i++){
+                    for (var i = 0; i < players.data.length; i++) {
                         var player = players.data[i];
-                        if (isNotMe(player.player_number)){
+                        if (isNotMe(player.player_number)) {
                             console.log('updates because of player info');
                             self.addPlayer(player);
                         }
@@ -54,7 +54,7 @@ playState.prototype =
 
                 socket.on('player update', function (player) {
                     // update the position of the player
-                    if(player.player_number in self.players)
+                    if (player.player_number in self.players)
                         self.players[player.player_number].position.set(player.x, player.y);
                     //self.players[player.player_number].y = player.y;
                 });
@@ -144,6 +144,18 @@ playState.prototype =
             );
             // Add the island player to the list of players
             this.players[player_number] = new_island;
+        },
+        getPlayersInfo: function () {
+            var info = [];
+            for (player_number in this.players) {
+                var player = this.players[player_number];
+                var data = {};
+                data.player_number = player_number;
+                data.x = player.x;
+                data.y = player.y;
+                info.push(data);
+            }
+            return info;
         },
     };
 
