@@ -58,7 +58,6 @@ playState.prototype =
 
             // networking
             socket.on('player connected', function(new_player){
-                console.log('new player');
                 IslandFactory(
                     islands, 
                     initial_position[new_player.player_number].x, 
@@ -66,6 +65,11 @@ playState.prototype =
                     'island_placeholder', 
                     'wave'
                 );
+            });
+
+
+            socket.on('player key', function(player_key){
+                
             });
 
             // Scoring def    

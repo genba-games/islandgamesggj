@@ -15,7 +15,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	};
 	island.tint = randomColor(0x888888 << 0, 0xFFFFFF << 0);
 
-	island.controls = controls
+	island.controls = controls;
 	//island.animations.add('kaboom');
 	island.keyPressed = function (key) {
 		for (i in key)
@@ -29,13 +29,13 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	// s.body.setCircle(25);
 	island.body.bounce.set(0.8);
 	island.body.maxVelocity = 300;
-	island.body.drag.x = 1000
-	island.body.drag.y = 1000
+	island.body.drag.x = 1000;
+	island.body.drag.y = 1000;
 	
 	island.acceleration = 1200;
 
 	//weapon
-	island.weapon = WaveFactory(island, island.waveSprite)
+	island.weapon = WaveFactory(island, island.waveSprite);
 	island.update = function () {
 		this.rotation = game.physics.arcade.angleToPointer(this)
 		/// Boundaries
