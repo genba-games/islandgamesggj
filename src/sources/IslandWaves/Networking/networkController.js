@@ -30,17 +30,13 @@ function emitKeyReleased(key) {
     socket.emit('player key', data);
 }
 
-function emitPressedKeys(controls) {
-
-}
-
 function addNetworkController(player_number) {
     if (!isPlayer(player_number)) return;
     nc = Controller();
     // Set all controls to `false` initially
-    for (var key in nc.options) {
-        if (nc.options.hasOwnProperty(key)) {
-            nc.options[key] = false;
+    for (var key in nc) {
+        if (nc.hasOwnProperty(key)) {
+            nc[key] = false;
         }
     }
     // Add to network controllers
