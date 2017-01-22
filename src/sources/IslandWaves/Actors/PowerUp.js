@@ -46,7 +46,7 @@ islandPowerUp = [
     },
 ]
 PowerUpFactory = function (group) {
-    config = islandPowerUp[Math.floor(Math.random()*islandPowerUp.length)]
+    config = islandPowerUp[game.rnd.integerRange(1,islandPowerUp.length)]
     pUp = group.create(Math.random() * 700, Math.random() * 500, config.sprite);
     game.physics.arcade.enable([pUp]);
     pUp.config = config;

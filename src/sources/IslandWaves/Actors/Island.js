@@ -70,20 +70,22 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		// Acceleration
 		if (keyPressed(this.controls.up))
 			this.body.acceleration.y = -this.acceleration;
-			game.physics.arcade.velocityFromAngle(this.angle, 300, this.body.velocity);
 		else if (keyPressed(this.controls.down))
 			this.body.acceleration.y = this.acceleration;
-			game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity );
 		else
 			this.body.acceleration.y = 0;
 		if (keyPressed(this.controls.left))
 			this.body.acceleration.x = -this.acceleration;
-			this.body.angularAcceleration = -400 * this.powerUpSpeed
 		else if (this.keyPressed(this.controls.right))
 			this.body.acceleration.x = this.acceleration;
-			this.body.angularAcceleration = 400 * this.powerUpSpeed
 		else
 			this.body.angularVelocity = 0;
+		
+		// game.physics.arcade.velocityFromAngle(this.angle, 300, this.body.velocity);
+		// game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity );
+		// this.body.angularAcceleration = -400 * this.powerUpSpeed
+		// this.body.angularAcceleration = 400 * this.powerUpSpeed
+			
 	}
 
 	return island;
