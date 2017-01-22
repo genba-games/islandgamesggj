@@ -92,8 +92,8 @@ playState.prototype =
             // Group definitions
             islands = game.add.group();
             powerupIsland = game.add.group()
-            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'crab_island', 'wave', winni1);
-            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'treasure_island', 'wave', winni2);
+            //IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'crab_island', 'wave', winni1);
+            //IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'treasure_island', 'wave', winni2);
 
             // Create own island
             this.addPlayer(this.player_number);
@@ -199,6 +199,14 @@ playState.prototype =
 
         // Helper Functions
         addPlayer: function (player_number) {
+
+            var sprites = [
+                'crab_island',
+                'treasure_island'
+            ];
+
+            var sprite = sprites[game.rnd.integerInRange(0,sprites.length -1)];
+
             if (!isPlayer(player_number)) return;
 
             // Define controller
@@ -213,7 +221,7 @@ playState.prototype =
                 islands,
                 this.initial_position[player_number].x,
                 this.initial_position[player_number].y,
-                'island_placeholder',
+                sprite,
                 'wave',
                 controller
             );
