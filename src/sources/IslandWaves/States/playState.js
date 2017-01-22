@@ -52,23 +52,28 @@ playState.prototype =
                         self.addPlayer(new_player.player_number);
                 });
 
-                socket.on('player update',function(data) {
-                    var p = data.players[0];
-                    updateNetworkController(p.player_number, p.controller)
+                socket.on('player update', function (data) {
+                    if (!isMe(data.player_number) && isPlayer(data.player_number)) {
+                        var c = {
+                            keys: data.keys,
+                            pointer: data.pointer,
+                        }
+                        updateNetworkController(p.player_number, p.controller)
+                    }
                 });
             }
             // Slaves 
-            else { 
+            else {
                 socket.on('player update', function (data) {
                     // Update the position of the player
-                    for(var p in data.players){
+                    for (var p in data.players) {
                         p = data.players[p];
                         // Add the player if it's new
                         if (self.players[p.player_number] === undefined) {
                             self.addPlayer(p.player_number);
                         }
                         // Update existing players
-                        if (p.player_number in self.players){
+                        if (p.player_number in self.players) {
                             self.players[p.player_number].position.set(p.x, p.y);
                             updateNetworkController(p.player_number, p.controller)
                         }
@@ -199,7 +204,7 @@ playState.prototype =
                 };
                 data['pointer'] = pointer;
             }
-            if(isMaster()){
+            if (isMaster()) {
                 data.players = this.getPlayersInfo();
             }
             socket.emit('sync', data);
@@ -213,7 +218,7 @@ playState.prototype =
                 'treasure_island'
             ];
 
-            var sprite = sprites[game.rnd.integerInRange(0,sprites.length -1)];
+            var sprite = sprites[game.rnd.integerInRange(0, sprites.length - 1)];
 
             if (!isPlayer(player_number)) return;
 
