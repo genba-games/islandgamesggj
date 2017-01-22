@@ -14,7 +14,6 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		return Math.random() * (max - min) + min
 	};
 	island.tint = randomColor(0x888888 << 0, 0xFFFFFF << 0);
-
 	island.controls = controls
 
 	island.keyPressed = function (key) {
@@ -38,6 +37,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 	island.weapon = WaveFactory(island, island.waveSprite)
 	island.update = function () {
 		this.rotation = game.physics.arcade.angleToPointer(this)
+		
 		/// Boundaries
 		// Width
 		if (this.position.x > game.width + this.width / 2)
@@ -54,6 +54,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		if (this.controls == undefined) return;
 		if (this.keyPressed(this.controls.shoot)) {
 			this.weapon.fire();
+			game.physics.arcade.moveToPointer(this,-300)
 		}
 		// Acceleration
 		if (this.keyPressed(this.controls.up))

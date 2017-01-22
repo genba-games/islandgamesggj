@@ -14,7 +14,10 @@ WaveFactory = function (object, sprite) {
     wave.bulletSpeed = 600;
     wave.fireRate = 1000;
     wave.bulletWorldWrap=true
+    wave.damage = 10
     wave.trackSprite(object, 0, 0, true);
-
+    wave.update = function(){
+        this.damage = this.bulletSpeed
+    }
     return wave;
 }

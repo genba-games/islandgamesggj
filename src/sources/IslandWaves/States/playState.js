@@ -13,10 +13,11 @@ playState.prototype =
             game.load.image('powerup_hermit', 'src/graphics/hermit.png')
 
             game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
-            game.load.audio('main_audio', 'src/audio/test.mp3')
+            game.load.audio('main_audio', 'src/audio/battle.wav')
         },
 
         create: function () {
+            game.add.tileSprite(0,0,800,600,'background')
             game.physics.startSystem(Phaser.Physics.ARCADE);
             gondrols =
                 {
@@ -83,7 +84,6 @@ playState.prototype =
                     island.scale.x=1
                     island.scale.y=1
                 }
-                // island.scale.setTo(pUp.config.scale.x*,)
             }
             game.time.events.add(Phaser.Timer.SECOND * pUp.config.time, callBack, this);
             pUp.destroy()
@@ -91,8 +91,11 @@ playState.prototype =
 
         update: function () {
             game.physics.arcade.collide(islands, islands);
+            
             for (var i in islands.children) {
                 game.physics.arcade.collide(islands, islands.children[i].weapon.bullets);
+                game.physics.arcade.collide(islands.children[i].weapon.bullets, islands.children[i].weapon.bullets);
+                
             }
             game.physics.arcade.overlap(islands, powerupIsland, this.powerUpCallBack);
         },
