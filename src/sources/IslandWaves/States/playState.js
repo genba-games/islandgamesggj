@@ -45,6 +45,7 @@ playState.prototype =
             self = this;
             /// Networking
             // Player events
+            // Master
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
                     if (self.players[new_player.player_number] === undefined)
@@ -52,9 +53,15 @@ playState.prototype =
                 });
 
                 socket.on('player update',function(data) {
-                    updateNetworkController(data.player_number, data.controller)
+                    var c = {
+                        keys: data.keys,
+                        pointer: data.pointer,
+                    }
+                    updateNetworkController(data.player_number, c)
                 });
-            } else {
+            }
+            // Slaves 
+            else { 
                 socket.on('player update', function (data) {
                     // Update the position of the player
                     for(var p in data.players){
