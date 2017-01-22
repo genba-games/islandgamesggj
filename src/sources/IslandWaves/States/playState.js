@@ -89,7 +89,8 @@ playState.prototype =
 
                 socket.on('player update', function (player) {
                     // update the position of the player
-                    self.players[player.player_number].position.set(player.x, player.y);
+                    if(player.player_number in self.players)
+                        self.players[player.player_number].position.set(player.x, player.y);
                     //self.players[player.player_number].y = player.y;
                 });
             }
