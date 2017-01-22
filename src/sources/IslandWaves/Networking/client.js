@@ -25,8 +25,6 @@ function open_connection(address, connectionCallback) {
         console.log('LS:', localStorage);
         console.log('Connected... initiating handshake with session:', iosession);
         conn.emit('hello', iosession);
-
-        connectionCallback();
     });
 
     conn.on('session', function (msg) {
@@ -39,6 +37,7 @@ function open_connection(address, connectionCallback) {
         }
         conn.player_number = msg.player_number;
         console.log('our player number is:', conn.player_number );
+        connectionCallback();
     });
 
     conn.on('chat', function (msg) {
