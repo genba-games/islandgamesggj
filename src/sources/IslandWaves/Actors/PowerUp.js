@@ -11,7 +11,7 @@ islandPowerUp = [
         time: 5,
         add: {
             'body.maxVelocity': 600,
-            'acceleration': 2400,
+            'powerUpSpeed': 2400,
         },
         tint: 0xffff00,
         sprite:'PUspeed'

@@ -22,6 +22,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 				return true;
 		return false;
 	}
+	island.cooldown = false
 	island.invulnerable = false
 	island.health = 2500
 	// Physics
@@ -54,20 +55,27 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		/// Input
 		if (this.controls == undefined) return;
 		if (this.keyPressed(this.controls.shoot)) {
-			this.weapon.fire();
-			game.physics.arcade.velocityFromAngle(this.angle, - 150, this.body.velocity);
+			callback = function () {
+				this.cooldown = false
+			};
+			if (!this.cooldown) {
+				this.weapon.fire();
+				game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity);
+				game.time.events.add(this.weapon.fireRate, callback, this)
+				this.cooldown = true
+			}
 		}
 		// Acceleration
 		if (this.keyPressed(this.controls.up))
 			game.physics.arcade.velocityFromAngle(this.angle, 300, this.body.velocity);
 		else if (this.keyPressed(this.controls.down))
-			game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity);
+			game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity );
 		else
 			this.body.acceleration = 0;
 		if (this.keyPressed(this.controls.left))
-			this.body.angularAcceleration = -200 * this.powerUpSpeed
+			this.body.angularAcceleration = -400 * this.powerUpSpeed
 		else if (this.keyPressed(this.controls.right))
-			this.body.angularAcceleration = 200 * this.powerUpSpeed
+			this.body.angularAcceleration = 400 * this.powerUpSpeed
 		else
 			this.body.angularVelocity = 0;
 	}

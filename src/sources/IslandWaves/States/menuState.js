@@ -5,7 +5,7 @@ menuState.prototype =
         preload: function () {
             // Load assets
             game.load.image('title_screen', 'src/graphics/title_screen.png');
-            game.load.image('bomb', 'src/graphics/bomb.png');
+            game.load.spritesheet('logo', 'src/graphics/logoSprite.png',370,388);
         },
 
         create: function () {
@@ -18,7 +18,9 @@ menuState.prototype =
             // connect = game.add.button(game.world.centerX - 95, 400, 'bomb', start_game, this);
 
             // FIXME Placeholder
-            bomb = game.add.button(game.width / 2, game.height / 2 - 90, 'bomb', this.connect, this);
+            logo = game.add.button(175, 25, 'logo', this.connect, this);
+            var animate = logo.animations.add('animate');
+            logo.animations.play('animate',10,true);
         },
 
         /**

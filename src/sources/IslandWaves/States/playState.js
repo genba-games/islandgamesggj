@@ -53,6 +53,64 @@ playState.prototype =
                         Phaser.Keyboard.SPACEBAR
                     ]
                 };
+            winni1 =
+                {
+                    'up':
+                    [
+                        Phaser.Keyboard.Q
+                    ],
+                    'down':
+                    [
+                        Phaser.Keyboard.R
+                    ],
+                    'left':
+                    [
+                        Phaser.Keyboard.W
+                    ],
+                    'right':
+                    [
+                        Phaser.Keyboard.E
+                    ],
+                    'shoot': [
+                        Phaser.Keyboard.T,
+                        Phaser.Keyboard.Y,
+                        Phaser.Keyboard.U,
+                        Phaser.Keyboard.I,
+                        Phaser.Keyboard.O,
+                        Phaser.Keyboard.P,
+                        Phaser.Keyboard.A,
+                        Phaser.Keyboard.S,
+                    ]
+                };
+            winni2 =
+                {
+                    'up':
+                    [
+                        Phaser.Keyboard.F
+                    ],
+                    'down':
+                    [
+                        Phaser.Keyboard.J
+                    ],
+                    'left':
+                    [
+                        Phaser.Keyboard.G
+                    ],
+                    'right':
+                    [
+                        Phaser.Keyboard.H
+                    ],
+                    'shoot': [
+                        Phaser.Keyboard.K,
+                        Phaser.Keyboard.L,
+                        Phaser.Keyboard.Z,
+                        Phaser.Keyboard.X,
+                        Phaser.Keyboard.C,
+                        Phaser.Keyboard.V,
+                        Phaser.Keyboard.B,
+                        Phaser.Keyboard.N
+                    ]
+                };
 
             // Scoring def    
             var starfield;
@@ -73,8 +131,9 @@ playState.prototype =
             //Group def
             islands = game.add.group();
             powerupIsland = game.add.group()
-            IslandFactory(islands, 0, 0, 'crab_island', 'wave', gondrols);
-            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'treasure_island', 'wave');
+            // IslandFactory(islands, 0, 0, 'crab_island', 'wave', gondrols);
+            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'crab_island', 'wave', winni1);
+            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'treasure_island', 'wave', winni2);
             PowerUpFactory(powerupIsland)
             PowerUpFactory(powerupIsland)
             PowerUpFactory(powerupIsland)
@@ -134,9 +193,9 @@ playState.prototype =
         },
         bulletIslandCollitionCallback: function (island, bullet) {
             callback = function () {
-                    island.invulnerable = false
-                    island.alpha = 1
-                };
+                island.invulnerable = false
+                island.alpha = 1
+            };
             if (!island.invulnerable) {
                 island.alpha = 0.5
                 island.health -= Math.abs(bullet.body.velocity.x) + Math.abs(bullet.body.velocity.y)
@@ -153,8 +212,10 @@ playState.prototype =
 
             for (var i in islands.children) {
                 game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, this.bulletIslandCollitionCallback);
-                game.physics.arcade.collide(islands.children[i].weapon.bullets, islands.children[i].weapon.bullets);
+                for (var j in islands.children) {
+                    game.physics.arcade.collide(islands.children[i].weapon.bullets, islands.children[j].weapon.bullets);
 
+                }
             }
             game.physics.arcade.overlap(islands, powerupIsland, this.powerUpCallback);
         },
