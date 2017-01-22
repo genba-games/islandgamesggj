@@ -48,34 +48,37 @@ playState.prototype =
             self = this;
             /// Networking
             // Player events
+            // Master
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
                     if (self.players[new_player.player_number] === undefined)
                         self.addPlayer(new_player.player_number);
                 });
 
-                socket.on('player update',function(data) {
-                    // Update network controllers
-                    if(!isMe(data.player_number)){
-                        keys = networkControllers[data.player_number].keys;
-                        for(var k in data.keys) {
-                            keys[k] = data.keys[k];
+                socket.on('player update', function (data) {
+                    if (!isMe(data.player_number) && isPlayer(data.player_number)) {
+                        var c = {
+                            keys: data.keys,
+                            pointer: data.pointer,
                         }
-                        networkControllers[data.player_number].pointer = data.pointer;
+                        updateNetworkController(data.player_number, c)
                     }
                 });
-            } else {
+            }
+            // Slaves 
+            else {
                 socket.on('player update', function (data) {
                     // Update the position of the player
-                    for(var p in data.players){
+                    for (var p in data.players) {
                         p = data.players[p];
                         // Add the player if it's new
                         if (self.players[p.player_number] === undefined) {
                             self.addPlayer(p.player_number);
                         }
                         // Update existing players
-                        if (p.player_number in self.players){
+                        if (p.player_number in self.players) {
                             self.players[p.player_number].position.set(p.x, p.y);
+                            updateNetworkController(p.player_number, p.controller)
                         }
                     }
                 });
@@ -209,7 +212,7 @@ playState.prototype =
                 };
                 data['pointer'] = pointer;
             }
-            if(isMaster()){
+            if (isMaster()) {
                 data.players = this.getPlayersInfo();
             }
             socket.emit('sync', data);
@@ -223,7 +226,7 @@ playState.prototype =
                 'treasure_island'
             ];
 
-            var sprite = sprites[game.rnd.integerInRange(0,sprites.length -1)];
+            var sprite = sprites[game.rnd.integerInRange(0, sprites.length - 1)];
 
             if (!isPlayer(player_number)) return;
 
@@ -246,6 +249,7 @@ playState.prototype =
             // Add the island player to the list of players
             this.players[player_number] = new_island;
         },
+
         getPlayersInfo: function () {
             var info = [];
             for (player_number in this.players) {
@@ -254,6 +258,15 @@ playState.prototype =
                 data.player_number = player_number;
                 data.x = player.x;
                 data.y = player.y;
+                data.controller = {
+                    pointer: {
+                        worldX: player.controls.pointer.worldX,
+                        worldY: player.controls.pointer.worldY,
+                    },
+                    keys: {
+                        shoot: keyPressed(player.controls, controllerKeys.SHOOT)
+                    }
+                };
                 info.push(data);
             }
             return info;

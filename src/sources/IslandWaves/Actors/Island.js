@@ -49,18 +49,21 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 			this.position.y = game.height + this.height / 2 - 1;
 
 		/// Input
-		if (this.controls == undefined) return;
-		if (keyPressed(this.controls, controllerKeys.SHOOT)) {
-			callback = function () {
-				this.cooldown = false;
-			};
-			if (!this.cooldown && this.alive) {
-				this.weapon.fire();
-				game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity);
-				game.time.events.add(this.weapon.fireRate, callback, this)
-				this.cooldown = true;
+		if (this.alive) {
+			if (this.controls == undefined) return;
+			if (keyPressed(this.controls, controllerKeys.SHOOT)) {
+				callback = function () {
+					this.cooldown = false;
+				};
+				if (!this.cooldown) {
+					this.weapon.fire();
+					game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity);
+					game.time.events.add(this.weapon.fireRate, callback, this)
+					this.cooldown = true;
+				}
 			}
 		}
+		
 		// Acceleration
 		if (keyPressed(this.controls, controllerKeys.UP))
 			this.body.acceleration.y = -this.acceleration;
@@ -73,14 +76,8 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		else if (keyPressed(this.controls, controllerKeys.RIGHT))
 			this.body.acceleration.x = this.acceleration;
 		else
-			this.body.acceleration.x = 0;
-		
-		// game.physics.arcade.velocityFromAngle(this.angle, 300, this.body.velocity);
-		// game.physics.arcade.velocityFromAngle(this.angle, -300, this.body.velocity );
-		// this.body.angularAcceleration = -400 * this.powerUpSpeed
-		// this.body.angularAcceleration = 400 * this.powerUpSpeed
-			
+			this.body.acceleration.x = 0;			
 	}
-
+	
 	return island;
 }
