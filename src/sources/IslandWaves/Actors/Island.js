@@ -14,8 +14,8 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		return Math.random() * (max - min) + min
 	};
 	// island.tint = randomColor(0xAAAAAA << 0, 0xFFFFFF << 0);
+
 	island.controls = controls
-	//island.animations.add('kaboom');
 	island.keyPressed = function (key) {
 		for (i in key)
 			if (game.input.keyboard.isDown(key[i]))
@@ -23,6 +23,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 		return false;
 	}
 
+	island.health = 2500
 	// Physics
 	game.physics.arcade.enable([island]);
 	// s.body.setCircle(25);

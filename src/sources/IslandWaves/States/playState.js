@@ -10,8 +10,8 @@ playState.prototype =
             game.load.image('wave_placeholder3', 'src/graphics/beach_ball.png')
             game.load.image('background', 'src/graphics/water.png');
 
-            game.load.image('crab_island','src/graphics/crab island.png')
-            game.load.image('treasure_island','src/graphics/treasure chest island.png')
+            game.load.image('crab_island', 'src/graphics/crab island.png')
+            game.load.image('treasure_island', 'src/graphics/treasure chest island.png')
 
             game.load.image('PUbig', 'src/graphics/PU bigger size.png')
             game.load.image('PUsmall', 'src/graphics/PU smaller size.png')
@@ -25,7 +25,7 @@ playState.prototype =
         },
 
         create: function () {
-            game.add.tileSprite(0,0,800,600,'background')
+            game.add.tileSprite(0, 0, 800, 600, 'background')
             game.physics.startSystem(Phaser.Physics.ARCADE);
             gondrols =
                 {
@@ -64,6 +64,7 @@ playState.prototype =
 
             //  Music
             music = game.add.audio('main_audio');
+            music.loop = true;
             music.play();
 
             mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -120,26 +121,41 @@ playState.prototype =
                     _.set(island, conf, value)
                 };
             };
-            if(pUp.config.scale){
+            if (pUp.config.scale) {
                 island.scale.x *= pUp.config.scale
                 island.scale.y *= pUp.config.scale
                 callBack = function () {
-                    island.scale.x=1
-                    island.scale.y=1
+                    island.scale.x = 1
+                    island.scale.y = 1
                 }
             }
             game.time.events.add(Phaser.Timer.SECOND * pUp.config.time, callBack, this);
             pUp.destroy()
         },
-
+        bulletIslandCollitionCallBack: function (island, bullet) {
+            invulnerable = true
+            island.alpha=0.5
+            
+            if (!invulnerable) {
+                island.health -= Math.abs(bullet.body.velocity.x) + Math.abs(bullet.body.velocity.y)
+                if (0 > island.health) {
+                    island.kill()
+                };
+            };
+            callBack = function () {
+                invunerable = false
+                island.alpha=1
+            };
+            game.time.events.add(Phaser.Timer.SECOND * 2, callBack, this)
+        },
         update: function () {
             // Collision          
             game.physics.arcade.collide(islands, islands);
-            
+
             for (var i in islands.children) {
-                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets);
+                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, this.bulletIslandCollitionCallBack);
                 game.physics.arcade.collide(islands.children[i].weapon.bullets, islands.children[i].weapon.bullets);
-                
+
             }
             game.physics.arcade.overlap(islands, powerupIsland, this.powerUpCallBack);
         },
