@@ -31,7 +31,7 @@ io.on('connection', function (socket) {
         } else {
             //new connection 
             console.log('session', iosession, 'not valid');
-            var iosession = uuid.v4(); // generate a new session id
+            iosession = uuid.v4(); // generate a new session id
             console.log('new user', iosession, 'connected');
             valid_sessions.push(iosession);
             response.type = 'new connection';
@@ -45,9 +45,8 @@ io.on('connection', function (socket) {
         io.emit('player connected', response);
     });
     socket.on('sync', function (response) {
-        
         response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
-        if(response.player_number != 1){
+        if(response.player_number == 1){
             console.log('received', response);
         }
         io.emit('player update', response);

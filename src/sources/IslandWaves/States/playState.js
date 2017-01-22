@@ -52,21 +52,19 @@ playState.prototype =
                 });
 
                 socket.on('player update',function(data){
-                    console.log(networkControllers);
-                    for(var k in data.keys){
-                        networkControllers[data.player_number][k] = data.keys[k];
+                    if(!isMe(data.player_number)){
+                        for(var k in data.keys){
+                            networkControllers[data.player_number][k] = data.keys[k];
+                        }
                     }
                 });
             } else {
                 socket.on('player update', function (data) {
                     // update the position of the player
-                    // for player in data.players:
-                    //      if player not in my list... add
                     for(var p in data.players){
                         p = data.players[p];
                         // if we don't have this player... add it
                         if (self.players[p.player_number] === undefined) {
-                            console.log('updates because of player info');
                             self.addPlayer(p.player_number);
                         }
                         // update the players that we do have
@@ -183,13 +181,11 @@ playState.prototype =
                 y: island.y
             };
             if (!isMaster() && isPlayer()) {
-                console.log('FUCK');
                 keys = {};
                 var controller = this.players[this.player_number].controls;
                 for (var k in controller) {
                     v = controller[k];
                     keys[k] = keyPressed(v);
-                    console.log(v, keyPressed(v));
                 }
                 data['keys'] = keys;
             }
