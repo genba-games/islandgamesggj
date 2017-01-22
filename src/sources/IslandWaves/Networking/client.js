@@ -21,22 +21,22 @@ function open_connection(address, connectionCallback) {
     var conn = io.connect(address);
 
     conn.on('connect', function () {
-        console.log('IO Session:', iosession);
-        console.log('LS:', localStorage);
-        console.log('Connected... initiating handshake with session:', iosession);
+        //console.log('IO Session:', iosession);
+        //console.log('LS:', localStorage);
+        //console.log('Connected... initiating handshake with session:', iosession);
         conn.emit('hello', iosession);
     });
 
     conn.on('session', function (msg) {
-        console.log('session', msg);
+        //console.log('session', msg);
         if (msg.type == 'reconnection') {
-            console.log('reconnection', 'reconnected with session:', iosession);
+            //console.log('reconnection', 'reconnected with session:', iosession);
         } else {
-            console.log('new connection', 'iosession: ', msg.iosession);
+            //console.log('new connection', 'iosession: ', msg.iosession);
             localStorage.setItem('iosession', msg.iosession);
         }
         conn.player_number = msg.player_number;
-        console.log('our player number is:', conn.player_number );
+        //console.log('our player number is:', conn.player_number );
         connectionCallback();
     });
 

@@ -30,9 +30,9 @@ io.on('connection', function(socket){
             response.type = 'reconnection';
         }else{
             //new connection 
-            console.log('session', iosession, 'not valid');
+            //console.log('session', iosession, 'not valid');
             var iosession = uuid.v4(); // generate a new session id
-            console.log('new user', iosession, 'connected');
+            //console.log('new user', iosession, 'connected');
             valid_sessions.push(iosession);
             response.type = 'new connection';
             response.iosession = iosession;
@@ -44,9 +44,18 @@ io.on('connection', function(socket){
         socket.emit('session', response);
         io.emit('player connected',response);
     });
+
+    // data from master
+    socket.on('player info', function(response){
+        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
+        console.log('player info received', response);
+        io.emit('asd', response);
+    });
+
+
     socket.on('sync', function(response){
-        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
-        io.emit('sync',msg);
+        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
+        io.emit('player update', response);
     });
 });
 

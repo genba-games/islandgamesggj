@@ -6,7 +6,6 @@ var playState = function () { };
 var initial_position = undefined;
 playState.prototype =
     {
-        self: this,
         // Setup functions
         preload: function () {
             // Function called first to load all the assets
@@ -29,8 +28,10 @@ playState.prototype =
 
             this.player_number = socket.player_number;
             this.players = {};
+            this.gottaSendPlayersInfo = false;
         },
         create: function () {
+            self = this;
             /// Define controllers
             // Create controllers for other players
             addNetworkController(2);
@@ -70,20 +71,28 @@ playState.prototype =
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
                     self.addPlayer(new_player);
-                    socket.emit('player info', new_player);
+                    console.log('emit player info',self.getPlayersInfo());
+                    self.gottaSendPlayersInfo = true;
+                });
+            } else {
+                console.log('FUCK');
+                socket.on('asd', function (players) {
+                    console.log('received player info', players);
+                    for(var i=0; i < players.data.length; i++){
+                        var player = players.data[i];
+                        if (isNotMe(player.player_number)){
+                            console.log('updates because of player info');
+                            self.addPlayer(player);
+                        }
+                    }
+                });
+
+                socket.on('player update', function (player) {
+                    // update the position of the player
+                    self.players[player.player_number].position.set(player.x, player.y);
+                    //self.players[player.player_number].y = player.y;
                 });
             }
-            else {
-                socket.on('player info', function (player) {
-                    if (isNotMe(player.player_number))
-                        self.addPlayer(player);
-                });
-            }
-            socket.on('player update', function (player) {
-                // update the position of the player
-                this.players[player.player_number].x = player.x;
-                this.players[player.player_number].y = player.y;
-            });
 
             // Scoring definitions
             this.score = 0;
@@ -112,7 +121,9 @@ playState.prototype =
                 controls
             );
             // Add myself to the list of players
+            console.log('this.player_number', this.player_number);
             this.players[this.player_number] = island;
+            console.log('this.players', this.players);
 
             // Score
             this.scoreString = 'Score : ';
@@ -142,8 +153,15 @@ playState.prototype =
             // Networking
             // Connection is contained in the `conn` object.
             // socket.on()
-            data = { x: island.x, y: island.y };
+            data = { 
+                x: this.players[this.player_number].position.x, 
+                y: this.players[this.player_number].position.y 
+            };
             socket.emit('sync', data);
+            if(this.gottaSendPlayersInfo){
+                this.gottaSendPlayersInfo = false;
+                socket.emit('player info', {data:self.getPlayersInfo()});
+            }
         },
         // Helper Functions
         addPlayer: function (player) {
@@ -157,6 +175,18 @@ playState.prototype =
             //add the new player to the list of players
             this.players[player.player_number] = new_island;
         },
+        getPlayersInfo: function() {
+            var info = [];
+            for(player_number in this.players){
+                var player = this.players[player_number];
+                var data = {};
+                data.player_number = player_number;
+                data.x = player.x;
+                data.y = player.y;
+                info.push(data);
+            }
+            return info;
+        }
     };
 
 
