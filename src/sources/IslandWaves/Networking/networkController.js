@@ -5,7 +5,7 @@ var networkKeyEvent = {
     KEYDOWN: 'key down',
 }
 
-function keyPressed (controller, key) {
+function keyPressed(controller, key) {
     key = controller.keys[key];
     if (key === true) return true;
     if (key === false) return false;
@@ -42,7 +42,7 @@ function createNetworkPointer(x, y) {
 function addNetworkController(player_number) {
     if (!isPlayer(player_number)) return;
     nc = Controller();
-    
+
     /// Initial settings
     // Set all keys to `false` initially
     keys = nc.keys
@@ -58,4 +58,17 @@ function addNetworkController(player_number) {
     networkControllers[player_number] = nc;
 
     return nc;
+}
+
+function updateNetworkController(player_number, controller) {
+    // Update network controllers
+    if (!isMe(player_number) && isPlayer(player_number)) {
+        keys = networkControllers[player_number].keys;
+        if (keys) {
+            for (var k in controller.keys) {
+                keys[k] = controller.keys[k];
+            }
+        }
+        networkControllers[player_number].pointer = controller.pointer;
+    }
 }

@@ -52,14 +52,7 @@ playState.prototype =
                 });
 
                 socket.on('player update',function(data) {
-                    // Update network controllers
-                    if(!isMe(data.player_number)){
-                        keys = networkControllers[data.player_number].keys;
-                        for(var k in data.keys) {
-                            keys[k] = data.keys[k];
-                        }
-                        networkControllers[data.player_number].pointer = data.pointer;
-                    }
+                    updateNetworkController(data.player_number, data.controller)
                 });
             } else {
                 socket.on('player update', function (data) {
@@ -73,7 +66,7 @@ playState.prototype =
                         // Update existing players
                         if (p.player_number in self.players){
                             self.players[p.player_number].position.set(p.x, p.y);
-                            self.players[p.player]
+                            updateNetworkController(data.player_number, data.controller)
                         }
                     }
                 });
@@ -239,6 +232,7 @@ playState.prototype =
             // Add the island player to the list of players
             this.players[player_number] = new_island;
         },
+
         getPlayersInfo: function () {
             var info = [];
             for (player_number in this.players) {
@@ -247,10 +241,10 @@ playState.prototype =
                 data.player_number = player_number;
                 data.x = player.x;
                 data.y = player.y;
-                data.controls = {
+                data.controller = {
                     pointer: player.controls.pointer,
                     keys: {
-                        shoot: player.controls.keys.shoot
+                        shoot: player.controls.keys[controllerKeys.SHOOT]
                     }
                 };
                 info.push(data);
