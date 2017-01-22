@@ -7,7 +7,7 @@ menuState.prototype =
             // Load assets
             game.load.image('title_screen', 'src/graphics/title_screen.png');
             game.load.spritesheet('logo', 'src/graphics/logoSprite.png', 370, 388);
-            game.load.audio('beach_sound', 'src/audio/beach.wav')
+            game.load.audio('beach_sound', 'src/audio/beach.ogg')
             game.load.image('hermit_crab', 'src/graphics/hermit.png')
         },
 
@@ -38,6 +38,7 @@ menuState.prototype =
                 placeHolder: 'localhost:3000',
                 placeHolderColor: '#000000',
             });
+            ipInput.text._text = 'localhost:3000'
         },
         update: function () {
 
