@@ -1,0 +1,689 @@
+diff --git a/server/index.js b/server/index.js
+index dc960d4..021aa65 100644
+--- a/server/index.js
++++ b/server/index.js
+@@ -9,30 +9,30 @@ var session_map = {};
+ 
+ app.use(express.static('static'));
+ 
+-app.get('/', function(req, res){
++app.get('/', function (req, res) {
+     res.sendFile(__dirname + '/index.html');
+ });
+ 
+-io.on('connection', function(socket){
++io.on('connection', function (socket) {
+     //  console.log(socket.handshake);
+     console.log('a user connected');
+-    socket.on('disconnect', function(){
++    socket.on('disconnect', function () {
+         console.log('user disconnected');
+     });
+-    socket.on('hello', function(iosession){
+-        console.log('validating session:',iosession);
++    socket.on('hello', function (iosession) {
++        console.log('validating session:', iosession);
+ 
+         var response = {};
+ 
+-        if(valid_sessions.includes(iosession)){
++        if (valid_sessions.includes(iosession)) {
+             //reconnect
+             console.log('user', iosession, 'reconnected');
+             response.type = 'reconnection';
+-        }else{
++        } else {
+             //new connection 
+-            //console.log('session', iosession, 'not valid');
++            console.log('session', iosession, 'not valid');
+             var iosession = uuid.v4(); // generate a new session id
+-            //console.log('new user', iosession, 'connected');
++            console.log('new user', iosession, 'connected');
+             valid_sessions.push(iosession);
+             response.type = 'new connection';
+             response.iosession = iosession;
+@@ -42,23 +42,18 @@ io.on('connection', function(socket){
+         }
+         response.player_number = valid_sessions.indexOf(iosession) + 1;
+         socket.emit('session', response);
+-        io.emit('player connected',response);
++        io.emit('player connected', response);
+     });
+-
+-    // data from master
+-    socket.on('player info', function(response){
+-        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
+-        console.log('player info received', response);
+-        io.emit('asd', response);
++    socket.on('sync', function (response) {
++        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
++        io.emit('sync', response);
+     });
+-
+-
+-    socket.on('sync', function(response){
+-        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
+-        io.emit('player update', response);
++    socket.on('player key', function (response) {
++        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
++        io.emit('player key', response);
+     });
+ });
+ 
+-http.listen(3000, function(){
++http.listen(3000, function () {
+     console.log('listening on *:3000');
+ });
+diff --git a/server/index.js.orig b/server/index.js.orig
+new file mode 100644
+index 0000000..52883e5
+--- /dev/null
++++ b/server/index.js.orig
+@@ -0,0 +1,74 @@
++var uuid = require('node-uuid');
++var express = require('express');
++var app = express();
++var http = require('http').Server(app);
++var io = require('socket.io')(http);
++
++var valid_sessions = [];
++var session_map = {};
++
++app.use(express.static('static'));
++
++app.get('/', function (req, res) {
++    res.sendFile(__dirname + '/index.html');
++});
++
++io.on('connection', function (socket) {
++    //  console.log(socket.handshake);
++    console.log('a user connected');
++    socket.on('disconnect', function () {
++        console.log('user disconnected');
++    });
++    socket.on('hello', function (iosession) {
++        console.log('validating session:', iosession);
++
++        var response = {};
++
++        if (valid_sessions.includes(iosession)) {
++            //reconnect
++            console.log('user', iosession, 'reconnected');
++            response.type = 'reconnection';
++        } else {
++            //new connection 
++            //console.log('session', iosession, 'not valid');
++            var iosession = uuid.v4(); // generate a new session id
++            //console.log('new user', iosession, 'connected');
++            valid_sessions.push(iosession);
++            response.type = 'new connection';
++            response.iosession = iosession;
++            // handle the sesison map: 
++            // update the socket id to session map
++            session_map[socket.id] = iosession;
++        }
++        response.player_number = valid_sessions.indexOf(iosession) + 1;
++        socket.emit('session', response);
++        io.emit('player connected', response);
++    });
++<<<<<<< Updated upstream
++
++    // data from master
++    socket.on('player info', function(response){
++        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
++        console.log('player info received', response);
++        io.emit('asd', response);
++    });
++
++
++    socket.on('sync', function(response){
++        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
++        io.emit('player update', response);
++=======
++    socket.on('sync', function (response) {
++        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
++        io.emit('sync', response);
++    });
++    socket.on('player key', function (response) {
++        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
++        io.emit('player key', response);
++>>>>>>> Stashed changes
++    });
++});
++
++http.listen(3000, function () {
++    console.log('listening on *:3000');
++});
+diff --git a/src/sources/IslandWaves/Networking/networkController.js b/src/sources/IslandWaves/Networking/networkController.js
+index b52dc26..dc763df 100644
+--- a/src/sources/IslandWaves/Networking/networkController.js
++++ b/src/sources/IslandWaves/Networking/networkController.js
+@@ -7,22 +7,40 @@ var networkKeyEvent = {
+ 
+ function keyPressed (key) {
+     if (key === true) return true;
++    if (key === false) return false;
+     for (i in key)
+         if (game.input.keyboard.isDown(key[i]))
+             return true;
+     return false;
+ }
+ 
++function emitKeyPressed(key) {
++    data = {
++        key: key,
++        event: networkKeyEvent.KEYDOWN,
++    }
++    socket.emit('player key', data);
++}
++
++function emitKeyReleased(key) {
++    data = {
++        key: key,
++        event: networkKeyEvent.KEYUP,
++    }
++    socket.emit('player key', data);
++}
++
+ function addNetworkController(player_number) {
+     if (!isPlayer(player_number)) return;
+     nc = Controller();
+     // Set all controls to `false` initially
+-    for (var key in nc.options) {
+-        if (nc.options.hasOwnProperty(key)) {
+-            nc.options[key] = false;
++    for (var key in nc) {
++        if (nc.hasOwnProperty(key)) {
++            nc[key] = false;
+         }
+     }
+-
+     // Add to network controllers
+     networkControllers[player_number] = nc;
++
++    return nc;
+ }
+\ No newline at end of file
+diff --git a/src/sources/IslandWaves/Networking/utils.js b/src/sources/IslandWaves/Networking/utils.js
+index 1c83dff..7c0d657 100644
+--- a/src/sources/IslandWaves/Networking/utils.js
++++ b/src/sources/IslandWaves/Networking/utils.js
+@@ -14,6 +14,10 @@ function isSpectator(player_number) {
+     return player_number > 4;
+ }
+ 
++function isMe(player_number) {
++    return player_number === socket.player_number;
++}
++
+ function isNotMe(player_number) {
+-    return player_number != socket.player_number
++    return !isMe();
+ }
+\ No newline at end of file
+diff --git a/src/sources/IslandWaves/States/playState.js b/src/sources/IslandWaves/States/playState.js
+index 2dfcaa7..56588bd 100644
+--- a/src/sources/IslandWaves/States/playState.js
++++ b/src/sources/IslandWaves/States/playState.js
+@@ -28,72 +28,28 @@ playState.prototype =
+ 
+             this.player_number = socket.player_number;
+             this.players = {};
+-            this.gottaSendPlayersInfo = 0;
+         },
+         create: function () {
+             self = this;
+-            /// Define controllers
+-            // Create controllers for other players
+-            addNetworkController(2);
+-            addNetworkController(3);
+-            addNetworkController(4);
+-
+-            /// Setup controls
+-            var controls = undefined;
+-            // Host
+-            if (isMaster()) {
+-                controls = Controller();
+-            }
+-            // Player
+-            else if (isPlayer()) {
+-                controls = networkControllers[this.player_number];
+-            }
+-            // Spectator
+-            else {
+-                controls = undefined;
+-            }
+-
+             /// Networking
+-            // Controller events
+-            socket.on('player key', function (key) {
+-                player_number = key['player_number'];
+-                key = key['key']
+-                event = key['key']
+-                if (isPlayer(player_number)) {
+-                    if (event == networkKeyEvent.KEYDOWN)
+-                        networkControllers[player_number][key] = true;
+-                    else if (event == networkKeyEvent.KEYUP)
+-                        networkControllers[player_number][key] = false;
+-                }
+-            });
+-
+             // Player events
+             if (isMaster()) {
+                 socket.on('player connected', function (new_player) {
+-                    self.addPlayer(new_player);
+-                    console.log('emit player info',self.getPlayersInfo());
+-                    self.gottaSendPlayersInfo = 60;
+-                });
+-            } else {
+-                console.log('FUCK');
+-                socket.on('asd', function (players) {
+-                    console.log('received player info', players);
+-                    for(var i=0; i < players.data.length; i++){
+-                        var player = players.data[i];
+-                        if (isNotMe(player.player_number)){
+-                            console.log('updates because of player info');
+-                            self.addPlayer(player);
+-                        }
+-                    }
++                    self.addPlayer(new_player.player_number);
++                    socket.emit('player info', new_player);
+                 });
+-
+-                socket.on('player update', function (player) {
+-                    // update the position of the player
+-                    if(player.player_number in self.players)
+-                        self.players[player.player_number].position.set(player.x, player.y);
+-                    //self.players[player.player_number].y = player.y;
++            }
++            else {
++                socket.on('player info', function (player) {
++                    if (isNotMe())
++                        self.addPlayer(player.player_number);
+                 });
+             }
++            socket.on('player update', function (player) {
++                // update the position of the player
++                this.players[player.player_number].x = player.x;
++                this.players[player.player_number].y = player.y;
++            });
+ 
+             // Scoring definitions
+             this.score = 0;
+@@ -110,21 +66,10 @@ playState.prototype =
+ 
+             // Group definitions
+             islands = game.add.group();
+-            powerups = game.add.group()
++            powerups = game.add.group();
+ 
+             // Create own island
+-            var island = IslandFactory(
+-                islands,
+-                this.initial_position[socket.player_number].x,
+-                this.initial_position[socket.player_number].y,
+-                'island_placeholder',
+-                'wave',
+-                controls
+-            );
+-            // Add myself to the list of players
+-            console.log('this.player_number', this.player_number);
+-            this.players[this.player_number] = island;
+-            console.log('this.players', this.players);
++            this.addPlayer(this.player_number);
+ 
+             // Score
+             this.scoreString = 'Score : ';
+@@ -137,8 +82,8 @@ playState.prototype =
+             // Explosion pool
+             explosions = game.add.group();
+             explosions.createMultiple(300, 'kaboom');
+-            explosions.forEach(setupInvader, this);
+-            function setupInvader(island) {
++            explosions.forEach(explosion, this);
++            function explosion(island) {
+                 island.anchor.x = 0.5;
+                 island.anchor.y = 0.5;
+                 island.animations.add('kaboom');
+@@ -151,45 +96,46 @@ playState.prototype =
+                 game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
+             }
+ 
+-            // Networking
+-            // Connection is contained in the `conn` object.
+-            // socket.on()
+-            data = { 
+-                x: this.players[this.player_number].position.x, 
+-                y: this.players[this.player_number].position.y 
++            /// Networking
++            // Position sync
++            data = {
++                x: island.x,
++                y: island.y
+             };
+-            socket.emit('sync', data);
+-            if(this.gottaSendPlayersInfo > 0){
+-                this.gottaSendPlayersInfo -= 1;
+-                socket.emit('player info', {data:self.getPlayersInfo()});
++            if (!isMaster() && isPlayer()) {
++                keys = {};
++                for (var k in networkControllers[this.player_number]) {
++                    v = networkControllers[this.player_number][k];
++                    keys[k] = keyPressed(v);
++                }
++                data['keys'] = keys;
+             }
++            socket.emit('sync', data);
+         },
++
+         // Helper Functions
+-        addPlayer: function (player) {
+-            if(!(player.player_number in this.players)){
+-                var new_island = IslandFactory(
+-                    islands,
+-                    this.initial_position[player.player_number].x,
+-                    this.initial_position[player.player_number].y,
+-                    'island_placeholder',
+-                    'wave'
+-                );
+-                //add the new player to the list of players
+-                this.players[player.player_number] = new_island;
+-            }
++        addPlayer: function (player_number) {
++            if (!isPlayer(player_number)) return;
++
++            // Define controller
++            console.log('Adding player:', player_number);
++            if (isMe(player_number))
++                controller = Controller();
++            else
++                controller = addNetworkController(player_number);
++
++            // Create island
++            var new_island = IslandFactory(
++                islands,
++                this.initial_position[player_number].x,
++                this.initial_position[player_number].y,
++                'island_placeholder',
++                'wave',
++                controller
++            );
++            // Add the island player to the list of players
++            this.players[player_number] = new_island;
+         },
+-        getPlayersInfo: function() {
+-            var info = [];
+-            for(player_number in this.players){
+-                var player = this.players[player_number];
+-                var data = {};
+-                data.player_number = player_number;
+-                data.x = player.x;
+-                data.y = player.y;
+-                info.push(data);
+-            }
+-            return info;
+-        }
+     };
+ 
+ 
+diff --git a/src/sources/IslandWaves/States/playState.js.orig b/src/sources/IslandWaves/States/playState.js.orig
+new file mode 100644
+index 0000000..8d76a67
+--- /dev/null
++++ b/src/sources/IslandWaves/States/playState.js.orig
+@@ -0,0 +1,255 @@
++// The play state contains the game
++var playState = function () { };
++
++// configurations depending on who I am
++
++var initial_position = undefined;
++playState.prototype =
++    {
++        // Setup functions
++        preload: function () {
++            // Function called first to load all the assets
++            game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
++            game.load.image('wave_placeholder1', 'src/graphics/PLACEHOLDERWAVE.png');
++            game.load.image('wave_placeholder2', 'src/graphics/bomb.png')
++            game.load.image('wave_placeholder3', 'src/graphics/beach_ball.png')
++            game.load.image('background', 'src/graphics/water.png');
++
++            game.load.spritesheet('wave', 'src/graphics/wave.png', 20, 63);
++            game.load.audio('main_audio', 'src/audio/test.mp3')
++            game.load.spritesheet('kaboom', 'src/graphics/explode.png', 128, 128);
++
++            this.initial_position = {
++                1: { x: game.width / 2, y: 0 },
++                2: { x: game.width, y: game.height / 2 },
++                3: { x: game.width / 2, y: game.height },
++                4: { x: 0, y: game.height / 2 },
++            }
++
++            this.player_number = socket.player_number;
++            this.players = {};
++            this.gottaSendPlayersInfo = 0;
++        },
++        create: function () {
++            self = this;
++<<<<<<< Updated upstream
++            /// Define controllers
++            // Create controllers for other players
++            addNetworkController(2);
++            addNetworkController(3);
++            addNetworkController(4);
++
++            /// Setup controls
++            var controls = undefined;
++            // Host
++            if (isMaster()) {
++                controls = Controller();
++            }
++            // Player
++            else if (isPlayer()) {
++                controls = networkControllers[this.player_number];
++            }
++            // Spectator
++            else {
++                controls = undefined;
++            }
++
++=======
++>>>>>>> Stashed changes
++            /// Networking
++            // Player events
++            if (isMaster()) {
++                socket.on('player connected', function (new_player) {
++<<<<<<< Updated upstream
++                    self.addPlayer(new_player);
++                    console.log('emit player info',self.getPlayersInfo());
++                    self.gottaSendPlayersInfo = 60;
++                });
++            } else {
++                console.log('FUCK');
++                socket.on('asd', function (players) {
++                    console.log('received player info', players);
++                    for(var i=0; i < players.data.length; i++){
++                        var player = players.data[i];
++                        if (isNotMe(player.player_number)){
++                            console.log('updates because of player info');
++                            self.addPlayer(player);
++                        }
++                    }
++                });
++
++                socket.on('player update', function (player) {
++                    // update the position of the player
++                    if(player.player_number in self.players)
++                        self.players[player.player_number].position.set(player.x, player.y);
++                    //self.players[player.player_number].y = player.y;
++=======
++                    self.addPlayer(new_player.player_number);
++                    socket.emit('player info', new_player);
++                });
++            }
++            else {
++                socket.on('player info', function (player) {
++                    if (isNotMe())
++                        self.addPlayer(player.player_number);
++>>>>>>> Stashed changes
++                });
++            }
++
++            // Scoring definitions
++            this.score = 0;
++            this.scoreString = '';
++            this.scoreText;
++            var lives;
++
++            //  Music
++            music = game.add.audio('main_audio');
++            music.play();
++            // Music controls
++            mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
++            mute_key.onDown.add(mute, this);
++
++            // Group definitions
++            islands = game.add.group();
++            powerups = game.add.group();
++
++            // Create own island
++            var island = IslandFactory(
++                islands,
++                this.initial_position[socket.player_number].x,
++                this.initial_position[socket.player_number].y,
++                'island_placeholder',
++                'wave',
++                Controller()
++            );
++            // Add myself to the list of players
++            console.log('this.player_number', this.player_number);
++            this.players[this.player_number] = island;
++            console.log('this.players', this.players);
++
++            // Score
++            this.scoreString = 'Score : ';
++            this.scoreText = game.add.text(10, 10, this.scoreString + this.score, { font: '34px Arial', fill: '#fff' });
++
++            // Lives
++            lives = game.add.group();
++            game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
++
++            // Explosion pool
++            explosions = game.add.group();
++            explosions.createMultiple(300, 'kaboom');
++            explosions.forEach(explosion, this);
++            function explosion(island) {
++                island.anchor.x = 0.5;
++                island.anchor.y = 0.5;
++                island.animations.add('kaboom');
++            }
++        },
++        update: function () {
++            // Collision
++            game.physics.arcade.collide(islands, islands);
++            for (var i in islands.children) {
++                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
++            }
++
++<<<<<<< Updated upstream
++            // Networking
++            // Connection is contained in the `conn` object.
++            // socket.on()
++            data = { 
++                x: this.players[this.player_number].position.x, 
++                y: this.players[this.player_number].position.y 
++            };
++            socket.emit('sync', data);
++            if(this.gottaSendPlayersInfo > 0){
++                this.gottaSendPlayersInfo -= 1;
++                socket.emit('player info', {data:self.getPlayersInfo()});
++            }
++=======
++            /// Networking
++            // Position sync
++            data = {
++                x: island.x,
++                y: island.y
++            };
++            // socket.emit('sync', data);
++
++            // Network controller sync
++
++>>>>>>> Stashed changes
++        },
++
++        // Helper Functions
++<<<<<<< Updated upstream
++        addPlayer: function (player) {
++            if(!(player.player_number in this.players)){
++                var new_island = IslandFactory(
++                    islands,
++                    this.initial_position[player.player_number].x,
++                    this.initial_position[player.player_number].y,
++                    'island_placeholder',
++                    'wave'
++                );
++                //add the new player to the list of players
++                this.players[player.player_number] = new_island;
++            }
++=======
++        addPlayer: function (player_number) {
++            if (!isPlayer(player_number)) return;
++
++            // Define controller
++            if (isMe(player_number))
++                controller = Controller();
++            else
++                controller = addNetworkController(player_number);
++
++            // Create island
++            var new_island = IslandFactory(
++                islands,
++                this.initial_position[player_number].x,
++                this.initial_position[player_number].y,
++                'island_placeholder',
++                'wave',
++                controller
++            );
++            // Add the island player to the list of players
++            this.players[player_number] = new_island;
++>>>>>>> Stashed changes
++        },
++        getPlayersInfo: function() {
++            var info = [];
++            for(player_number in this.players){
++                var player = this.players[player_number];
++                var data = {};
++                data.player_number = player_number;
++                data.x = player.x;
++                data.y = player.y;
++                info.push(data);
++            }
++            return info;
++        }
++    };
++
++
++function islandBulletCollisionHandler(island, bullet) {
++    //  When a bullet hits an alien we kill them both
++    bullet.kill();
++
++    //  Increase the score
++    this.score += 1;
++    this.scoreText.text = this.scoreString + this.score;
++
++    //  And create an explosion :)
++    var explosion = explosions.getFirstExists(false);
++    explosion.reset(island.x, island.y);
++    explosion.play('kaboom', 30, false, true);
++}
++
++function mute() {
++    if (music.isPlaying) {
++        music.pause()
++    }
++    else {
++        music.resume();
++    }
++}

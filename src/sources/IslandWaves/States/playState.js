@@ -35,21 +35,30 @@ playState.prototype =
             // Player events
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
-                    self.addPlayer(new_player.player_number);
-                    socket.emit('player info', new_player);
+                    self.addPlayer(new_player);
+                    console.log('emit player info',self.getPlayersInfo());
+                    self.gottaSendPlayersInfo = 60;
+                });
+            } else {
+                console.log('FUCK');
+                socket.on('asd', function (players) {
+                    console.log('received player info', players);
+                    for(var i=0; i < players.data.length; i++){
+                        var player = players.data[i];
+                        if (isNotMe(player.player_number)){
+                            console.log('updates because of player info');
+                            self.addPlayer(player);
+                        }
+                    }
+                });
+
+                socket.on('player update', function (player) {
+                    // update the position of the player
+                    if(player.player_number in self.players)
+                        self.players[player.player_number].position.set(player.x, player.y);
+                    //self.players[player.player_number].y = player.y;
                 });
             }
-            else {
-                socket.on('player info', function (player) {
-                    if (isNotMe())
-                        self.addPlayer(player.player_number);
-                });
-            }
-            socket.on('player update', function (player) {
-                // update the position of the player
-                this.players[player.player_number].x = player.x;
-                this.players[player.player_number].y = player.y;
-            });
 
             // Scoring definitions
             this.score = 0;
