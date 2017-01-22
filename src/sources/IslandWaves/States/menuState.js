@@ -6,12 +6,17 @@ menuState.prototype =
             // Load assets
             game.load.image('title_screen', 'src/graphics/title_screen.png');
             game.load.spritesheet('logo', 'src/graphics/logoSprite.png',370,388);
+            game.load.audio('beach_sound', 'src/audio/beach.wav')
+
         },
 
         create: function () {
             // Set background
             game.add.sprite(0, 0, 'title_screen');
-
+            
+            music = game.add.audio('beach_sound');
+            music.loop = true;
+            music.play();
             // host = game.add.button(game.world.centerX - 95, 400, 'bomb', start_game, this);
             // host_address
             // host_connection_indicator
@@ -20,7 +25,7 @@ menuState.prototype =
             // FIXME Placeholder
             logo = game.add.button(175, 25, 'logo', this.connect, this);
             var animate = logo.animations.add('animate');
-            logo.animations.play('animate',10,true);
+            logo.animations.play('animate',7,true);
         },
 
         /**
@@ -28,6 +33,7 @@ menuState.prototype =
          */
         connect: function () {
             function start_game() {
+                this.music.stop();
                 game.state.start('play');
             }
 
