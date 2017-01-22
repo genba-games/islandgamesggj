@@ -36,29 +36,30 @@ playState.prototype =
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
                     self.addPlayer(new_player.player_number);
-                    console.log('emit player info',self.getPlayersInfo());
-                    self.gottaSendPlayersInfo = 60;
                 });
 
                 socket.on('player update',function(data){
-                    networkControllers[data.player_number] = data.keys;
-                });
-            } else {
-                socket.on('asd', function (players) {
-                    console.log('received player info', players);
-                    for (var i = 0; i < players.data.length; i++) {
-                        var player = players.data[i];
-                        if (isNotMe(player.player_number)) {
-                            console.log('updates because of player info');
-                            self.addPlayer(player);
-                        }
+                    for(var k in data.keys){
+                        networkControllers[data.player_number][k] = data.keys[k];
                     }
                 });
-
-                socket.on('player update', function (player) {
+            } else {
+                socket.on('player update', function (data) {
                     // update the position of the player
-                    if (player.player_number in self.players)
-                        self.players[player.player_number].position.set(player.x, player.y);
+                    // for player in data.players:
+                    //      if player not in my list... add
+                    for(var p in data.players){
+                        p = data.players[p];
+                        // if we don't have this player... add it
+                        if (self.players[p.player_number] === undefined) {
+                            console.log('updates because of player info');
+                            self.addPlayer(p.player_number);
+                        }
+                        // update the players that we do have
+                        if (p.player_number in self.players){
+                            self.players[p.player_number].position.set(p.x, p.y);
+                        }
+                    }
                 });
             }
 
@@ -108,18 +109,23 @@ playState.prototype =
             }
 
             /// Networking
-            // Position sync
             data = {
                 x: island.x,
                 y: island.y
             };
             if (!isMaster() && isPlayer()) {
+                console.log('FUCK');
                 keys = {};
-                for (var k in networkControllers[this.player_number]) {
-                    v = networkControllers[this.player_number][k];
+                var controller = this.players[this.player_number].controls;
+                for (var k in controller) {
+                    v = controller[k];
                     keys[k] = keyPressed(v);
+                    console.log(v, keyPressed(v));
                 }
                 data['keys'] = keys;
+            }
+            if(isMaster()){
+                data.players = this.getPlayersInfo();
             }
             socket.emit('sync', data);
         },

@@ -45,12 +45,12 @@ io.on('connection', function (socket) {
         io.emit('player connected', response);
     });
     socket.on('sync', function (response) {
-        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
-        io.emit('sync', response);
-    });
-    socket.on('player key', function (response) {
-        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
-        io.emit('player key', response);
+        
+        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
+        if(response.player_number != 1){
+            console.log('received', response);
+        }
+        io.emit('player update', response);
     });
 });
 
