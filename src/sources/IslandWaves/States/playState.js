@@ -101,13 +101,13 @@ playState.prototype =
                 island.animations.add('kaboom');
             }
         },
-        powerUpCallBack: function (island, pUp) {
+        powerUpCallback: function (island, pUp) {
             if (pUp.config.tint) {
                 var tintOrig = island.tint;
                 island.tint = pUp.config.tint;
             }
             if (pUp.config.add) {
-                callBack = function () {
+                callback = function () {
                     island.tint = tintOrig
                     for (var conf in pUp.config.add) {
                         valueBuff = _.get(island, conf)
@@ -124,43 +124,41 @@ playState.prototype =
             if (pUp.config.scale) {
                 island.scale.x *= pUp.config.scale
                 island.scale.y *= pUp.config.scale
-                callBack = function () {
+                callback = function () {
                     island.scale.x = 1
                     island.scale.y = 1
                 }
             }
-            game.time.events.add(Phaser.Timer.SECOND * pUp.config.time, callBack, this);
+            game.time.events.add(Phaser.Timer.SECOND * pUp.config.time, callback, this);
             pUp.destroy()
         },
-        bulletIslandCollitionCallBack: function (island, bullet) {
-            invulnerable = true
-            island.alpha=0.5
-            
-            if (!invulnerable) {
+        bulletIslandCollitionCallback: function (island, bullet) {
+            callback = function () {
+                    island.invulnerable = false
+                    island.alpha = 1
+                };
+            if (!island.invulnerable) {
+                island.alpha = 0.5
                 island.health -= Math.abs(bullet.body.velocity.x) + Math.abs(bullet.body.velocity.y)
                 if (0 > island.health) {
                     island.kill()
                 };
+                island.invulnerable = true
+                game.time.events.add(Phaser.Timer.SECOND * 2, callback, this)
             };
-            callBack = function () {
-                invunerable = false
-                island.alpha=1
-            };
-            game.time.events.add(Phaser.Timer.SECOND * 2, callBack, this)
         },
         update: function () {
             // Collision          
             game.physics.arcade.collide(islands, islands);
 
             for (var i in islands.children) {
-                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, this.bulletIslandCollitionCallBack);
+                game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, this.bulletIslandCollitionCallback);
                 game.physics.arcade.collide(islands.children[i].weapon.bullets, islands.children[i].weapon.bullets);
 
             }
-            game.physics.arcade.overlap(islands, powerupIsland, this.powerUpCallBack);
+            game.physics.arcade.overlap(islands, powerupIsland, this.powerUpCallback);
         },
         render: function () {
-            // game.debug.text('Active waves: ' + waves.countLiving() + ' / ' + waves.total, 32, 32);
         }
     };
 

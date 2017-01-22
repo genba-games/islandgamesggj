@@ -22,7 +22,7 @@ IslandFactory = function (group, x, y, sprite, waveSprite, controls, bullets) {
 				return true;
 		return false;
 	}
-
+	island.invulnerable = false
 	island.health = 2500
 	// Physics
 	game.physics.arcade.enable([island]);
