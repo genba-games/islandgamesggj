@@ -28,7 +28,7 @@ playState.prototype =
 
             this.player_number = socket.player_number;
             this.players = {};
-            this.gottaSendPlayersInfo = false;
+            this.gottaSendPlayersInfo = 0;
         },
         create: function () {
             self = this;
@@ -72,7 +72,7 @@ playState.prototype =
                 socket.on('player connected', function (new_player) {
                     self.addPlayer(new_player);
                     console.log('emit player info',self.getPlayersInfo());
-                    self.gottaSendPlayersInfo = true;
+                    self.gottaSendPlayersInfo = 60;
                 });
             } else {
                 console.log('FUCK');
@@ -159,22 +159,24 @@ playState.prototype =
                 y: this.players[this.player_number].position.y 
             };
             socket.emit('sync', data);
-            if(this.gottaSendPlayersInfo){
-                this.gottaSendPlayersInfo = false;
+            if(this.gottaSendPlayersInfo > 0){
+                this.gottaSendPlayersInfo -= 1;
                 socket.emit('player info', {data:self.getPlayersInfo()});
             }
         },
         // Helper Functions
         addPlayer: function (player) {
-            var new_island = IslandFactory(
-                islands,
-                this.initial_position[player.player_number].x,
-                this.initial_position[player.player_number].y,
-                'island_placeholder',
-                'wave'
-            );
-            //add the new player to the list of players
-            this.players[player.player_number] = new_island;
+            if(!(player.player_number in this.players)){
+                var new_island = IslandFactory(
+                    islands,
+                    this.initial_position[player.player_number].x,
+                    this.initial_position[player.player_number].y,
+                    'island_placeholder',
+                    'wave'
+                );
+                //add the new player to the list of players
+                this.players[player.player_number] = new_island;
+            }
         },
         getPlayersInfo: function() {
             var info = [];
