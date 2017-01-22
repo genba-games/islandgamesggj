@@ -9,30 +9,30 @@ var session_map = {};
 
 app.use(express.static('static'));
 
-app.get('/', function(req, res){
+app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function(socket){
+io.on('connection', function (socket) {
     //  console.log(socket.handshake);
     console.log('a user connected');
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function () {
         console.log('user disconnected');
     });
-    socket.on('hello', function(iosession){
-        console.log('validating session:',iosession);
+    socket.on('hello', function (iosession) {
+        console.log('validating session:', iosession);
 
         var response = {};
 
-        if(valid_sessions.includes(iosession)){
+        if (valid_sessions.includes(iosession)) {
             //reconnect
             console.log('user', iosession, 'reconnected');
             response.type = 'reconnection';
-        }else{
+        } else {
             //new connection 
-            //console.log('session', iosession, 'not valid');
+            console.log('session', iosession, 'not valid');
             var iosession = uuid.v4(); // generate a new session id
-            //console.log('new user', iosession, 'connected');
+            console.log('new user', iosession, 'connected');
             valid_sessions.push(iosession);
             response.type = 'new connection';
             response.iosession = iosession;
@@ -42,23 +42,18 @@ io.on('connection', function(socket){
         }
         response.player_number = valid_sessions.indexOf(iosession) + 1;
         socket.emit('session', response);
-        io.emit('player connected',response);
+        io.emit('player connected', response);
     });
-
-    // data from master
-    socket.on('player info', function(response){
-        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
-        console.log('player info received', response);
-        io.emit('asd', response);
+    socket.on('sync', function (response) {
+        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
+        io.emit('sync', response);
     });
-
-
-    socket.on('sync', function(response){
-        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
-        io.emit('player update', response);
+    socket.on('player key', function (response) {
+        response.player_number = valid_sessions.indexOf(session_map[socket.id]);
+        io.emit('player key', response);
     });
 });
 
-http.listen(3000, function(){
+http.listen(3000, function () {
     console.log('listening on *:3000');
 });

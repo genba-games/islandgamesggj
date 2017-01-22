@@ -28,31 +28,9 @@ playState.prototype =
 
             this.player_number = socket.player_number;
             this.players = {};
-            this.gottaSendPlayersInfo = 0;
         },
         create: function () {
             self = this;
-            /// Define controllers
-            // Create controllers for other players
-            addNetworkController(2);
-            addNetworkController(3);
-            addNetworkController(4);
-
-            /// Setup controls
-            var controls = undefined;
-            // Host
-            if (isMaster()) {
-                controls = Controller();
-            }
-            // Player
-            else if (isPlayer()) {
-                controls = networkControllers[this.player_number];
-            }
-            // Spectator
-            else {
-                controls = undefined;
-            }
-
             /// Networking
             // Controller events
             socket.on('player key', function (key) {
@@ -70,30 +48,21 @@ playState.prototype =
             // Player events
             if (isMaster()) {
                 socket.on('player connected', function (new_player) {
-                    self.addPlayer(new_player);
-                    console.log('emit player info',self.getPlayersInfo());
-                    self.gottaSendPlayersInfo = 60;
-                });
-            } else {
-                console.log('FUCK');
-                socket.on('asd', function (players) {
-                    console.log('received player info', players);
-                    for(var i=0; i < players.data.length; i++){
-                        var player = players.data[i];
-                        if (isNotMe(player.player_number)){
-                            console.log('updates because of player info');
-                            self.addPlayer(player);
-                        }
-                    }
-                });
-
-                socket.on('player update', function (player) {
-                    // update the position of the player
-                    if(player.player_number in self.players)
-                        self.players[player.player_number].position.set(player.x, player.y);
-                    //self.players[player.player_number].y = player.y;
+                    self.addPlayer(new_player.player_number);
+                    socket.emit('player info', new_player);
                 });
             }
+            else {
+                socket.on('player info', function (player) {
+                    if (isNotMe(player.player_number))
+                        self.addPlayer(player.player_number);
+                });
+            }
+            socket.on('player update', function (player) {
+                // update the position of the player
+                this.players[player.player_number].x = player.x;
+                this.players[player.player_number].y = player.y;
+            });
 
             // Scoring definitions
             this.score = 0;
@@ -110,7 +79,7 @@ playState.prototype =
 
             // Group definitions
             islands = game.add.group();
-            powerups = game.add.group()
+            powerups = game.add.group();
 
             // Create own island
             var island = IslandFactory(
@@ -119,12 +88,10 @@ playState.prototype =
                 this.initial_position[socket.player_number].y,
                 'island_placeholder',
                 'wave',
-                controls
+                Controller()
             );
             // Add myself to the list of players
-            console.log('this.player_number', this.player_number);
             this.players[this.player_number] = island;
-            console.log('this.players', this.players);
 
             // Score
             this.scoreString = 'Score : ';
@@ -137,8 +104,8 @@ playState.prototype =
             // Explosion pool
             explosions = game.add.group();
             explosions.createMultiple(300, 'kaboom');
-            explosions.forEach(setupInvader, this);
-            function setupInvader(island) {
+            explosions.forEach(explosion, this);
+            function explosion(island) {
                 island.anchor.x = 0.5;
                 island.anchor.y = 0.5;
                 island.animations.add('kaboom');
@@ -151,45 +118,40 @@ playState.prototype =
                 game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
             }
 
-            // Networking
-            // Connection is contained in the `conn` object.
-            // socket.on()
-            data = { 
-                x: this.players[this.player_number].position.x, 
-                y: this.players[this.player_number].position.y 
+            /// Networking
+            // Position sync
+            data = {
+                x: island.x,
+                y: island.y
             };
-            socket.emit('sync', data);
-            if(this.gottaSendPlayersInfo > 0){
-                this.gottaSendPlayersInfo -= 1;
-                socket.emit('player info', {data:self.getPlayersInfo()});
-            }
+            // socket.emit('sync', data);
+
+            // Network controller sync
+
         },
+
         // Helper Functions
-        addPlayer: function (player) {
-            if(!(player.player_number in this.players)){
-                var new_island = IslandFactory(
-                    islands,
-                    this.initial_position[player.player_number].x,
-                    this.initial_position[player.player_number].y,
-                    'island_placeholder',
-                    'wave'
-                );
-                //add the new player to the list of players
-                this.players[player.player_number] = new_island;
-            }
+        addPlayer: function (player_number) {
+            if (!isPlayer(player_number)) return;
+
+            // Define controller
+            if (isMe(player_number))
+                controller = Controller();
+            else
+                controller = addNetworkController(player_number);
+
+            // Create island
+            var new_island = IslandFactory(
+                islands,
+                this.initial_position[player_number].x,
+                this.initial_position[player_number].y,
+                'island_placeholder',
+                'wave',
+                controller
+            );
+            // Add the island player to the list of players
+            this.players[player_number] = new_island;
         },
-        getPlayersInfo: function() {
-            var info = [];
-            for(player_number in this.players){
-                var player = this.players[player_number];
-                var data = {};
-                data.player_number = player_number;
-                data.x = player.x;
-                data.y = player.y;
-                info.push(data);
-            }
-            return info;
-        }
     };
 
 

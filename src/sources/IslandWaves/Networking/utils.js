@@ -14,6 +14,10 @@ function isSpectator(player_number) {
     return player_number > 4;
 }
 
+function isMe(player_number) {
+    return player_number === socket.player_number;
+}
+
 function isNotMe(player_number) {
-    return player_number != socket.player_number
+    return !isMe();
 }
