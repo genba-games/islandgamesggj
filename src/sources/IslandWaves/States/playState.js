@@ -10,6 +10,9 @@ playState.prototype =
             game.load.image('wave_placeholder3', 'src/graphics/beach_ball.png')
             game.load.image('background', 'src/graphics/water.png');
 
+            game.load.image('crab_island','src/graphics/crab island.png')
+            game.load.image('treasure_island','src/graphics/treasure chest island.png')
+
             game.load.image('PUbig', 'src/graphics/PU bigger size.png')
             game.load.image('PUsmall', 'src/graphics/PU smaller size.png')
             game.load.image('PUslow', 'src/graphics/PU bigger size.png')
@@ -69,8 +72,12 @@ playState.prototype =
             //Group def
             islands = game.add.group();
             powerupIsland = game.add.group()
-            IslandFactory(islands, 0, 0, 'island_placeholder', 'wave', gondrols);
-            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'island_placeholder', 'wave');
+            IslandFactory(islands, 0, 0, 'crab_island', 'wave', gondrols);
+            IslandFactory(islands, Math.random() * 800, Math.random() * 600, 'treasure_island', 'wave');
+            PowerUpFactory(powerupIsland)
+            PowerUpFactory(powerupIsland)
+            PowerUpFactory(powerupIsland)
+            PowerUpFactory(powerupIsland)
             PowerUpFactory(powerupIsland)
 
 
