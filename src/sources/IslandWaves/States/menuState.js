@@ -32,7 +32,7 @@ menuState.prototype =
                 fillAlpha: 0,
                 width: 200,
                 font: '18px JinxedWizards',
-                placeHolder: '10.10.5.69:3000',
+                placeHolder: 'localhost:3000',
                 placeHolderColor: '#000000',
             });
         },
