@@ -7,6 +7,7 @@ socket = undefined;
 game.state.add('boot', bootState);
 game.state.add('menu', menuState);
 game.state.add('play', playState);
+//game.state.add('results', playState);
 
 // Start the 'boot' state
 game.state.start('boot');

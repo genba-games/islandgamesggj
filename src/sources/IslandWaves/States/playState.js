@@ -1,4 +1,4 @@
-// Creates a new 'play' state that wil contain the game
+// The play state contains the game
 var playState = function () { };
 
 // configurations depending on who I am
@@ -6,6 +6,7 @@ var playState = function () { };
 var initial_position = undefined;
 playState.prototype =
     {
+        // Setup functions
         preload: function () {
             // Function called first to load all the assets
             game.load.image('island_placeholder', 'src/graphics/PLACEHOLDER.png');
@@ -31,33 +32,11 @@ playState.prototype =
         
 
         create: function () {
-            game.physics.startSystem(Phaser.Physics.ARCADE);
-            gondrols =
-                {
-                    'up':
-                    [
-                        Phaser.Keyboard.W,
-                        Phaser.Keyboard.UP
-                    ],
-                    'down':
-                    [
-                        Phaser.Keyboard.S,
-                        Phaser.Keyboard.DOWN
-                    ],
-                    'left':
-                    [
-                        Phaser.Keyboard.A,
-                        Phaser.Keyboard.LEFT
-                    ],
-                    'right':
-                    [
-                        Phaser.Keyboard.D,
-                        Phaser.Keyboard.RIGHT
-                    ],
-                    'shoot': [
-                        Phaser.Keyboard.SPACEBAR
-                    ]
-                };
+            /// Define controllers
+            // Create controllers for other players
+            addNetworkController(2);
+            addNetworkController(3);
+            addNetworkController(4);
 
             // networking ============================================
 
@@ -70,6 +49,41 @@ playState.prototype =
             
             socket.on('player info', function(player){
                 this.addPlayer(player);
+            /// Setup controls
+            var controls = undefined;
+            // Host
+            if (this.isMaster()) {
+                controls = Controller();
+            } 
+            // Player
+            else if (this.isPlayer()) {
+                controls = networkControllers[player_number];
+            }
+            // Spectator
+            else {
+                controls = undefined;
+            }
+
+            // Networking
+            socket.on('player key', function(key) {
+                player_number = key['player_number'];
+                key = key['key']
+                event = key['key']
+                if (isPlayer(player_number)) {
+                    if (event == networkKeyEvent.KEYDOWN)
+                        networkControllers[player_number][key] = true;
+                    else if (event == networkKeyEvent.KEYUP)
+                        networkControllers[player_number][key] = false;
+                }
+            });
+            socket.on('player connected', function (new_player) {
+                IslandFactory(
+                    islands,
+                    initial_position[new_player.player_number].x,
+                    initial_position[new_player.player_number].y,
+                    'island_placeholder',
+                    'wave'
+                );
             });
 
             socket.on('player update', function(player){
@@ -84,16 +98,16 @@ playState.prototype =
 
             // Scoring def    
             var starfield;
+            // Scoring definitions
             this.score = 0;
             this.scoreString = '';
             this.scoreText;
             var lives;
 
-
             //  Music
             music = game.add.audio('main_audio');
             music.play();
-
+            // Music controls
             mute_key = game.input.keyboard.addKey(Phaser.Keyboard.M);
             mute_key.onDown.add(mute, this);
 
@@ -131,7 +145,7 @@ playState.prototype =
         },
 
         update: function () {
-            // Collision          
+            // Collision
             game.physics.arcade.collide(islands, islands);
             for (var i in islands.children) {
                 game.physics.arcade.collide(islands, islands.children[i].weapon.bullets, islandBulletCollisionHandler, null, this);
@@ -140,7 +154,7 @@ playState.prototype =
             // Networking
             // Connection is contained in the `conn` object.
             // socket.on()
-            data = {x:island.x, y:island.y};
+            data = { x: island.x, y: island.y };
             socket.emit('sync', data);
         },
         //Helper Functions
