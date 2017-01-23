@@ -2,7 +2,7 @@
     <img src="src/graphics/logo.png"/>
 </div>
 
-**Island Waves** is a multiplayer game of an aquatic brawl between islands. It was made in 48 hourds for the [Global Game Jam 2017](http://globalgamejam.org/2017/games/island-waves-0), using the theme *waves*. 
+**Island Waves** is a multiplayer game of an aquatic brawl between islands. It was made in 48 hours for the [Global Game Jam 2017](http://globalgamejam.org/2017/games/island-waves-0), using the theme *waves*. 
 
 Made by a group of friends in Asunción, 🇵🇾 with [Phaser](https://phaser.io/) and [socket.io](http://socket.io/).
 
