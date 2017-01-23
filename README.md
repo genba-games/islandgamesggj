@@ -6,6 +6,8 @@
 
 Made by a group of friends in Asunción, 🇵🇾 with [Phaser](https://phaser.io/) and [socket.io](http://socket.io/).
 
+The master branch will be updated in the future. If you want to check out the GGJ version check the [GGJ-freeze](https://github.com/berithpy/islandgamesggj/tree/GGJ-freeze) branch.
+
 ## Instructions
 
 The game is meant to be served from a server. Host it from any HTTP server capable of serving static files. The root of the server should be at the root of the project. The index of the server will load the game.
