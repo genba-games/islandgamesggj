@@ -4,8 +4,9 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var valid_sessions = [];
-var session_map = {};
+var valid_sessions = []; //valid session IDs
+var socket_session_map = {}; 
+var session_socket_map = {};
 
 app.use(express.static('static'));
 
@@ -36,20 +37,27 @@ io.on('connection', function (socket) {
             valid_sessions.push(iosession);
             response.type = 'new connection';
             response.iosession = iosession;
-            // handle the sesison map: 
-            // update the socket id to session map
-            session_map[socket.id] = iosession;
         }
+        // handle the sesison map: 
+        // update the socket id to session map
+        socket_session_map[socket.id] = iosession;
+        session_socket_map[iosession] = socket.id;
         response.player_number = valid_sessions.indexOf(iosession) + 1;
         socket.emit('session', response);
+        socket.broadcast.emit('player connected', response);
         io.emit('player connected', response);
     });
     socket.on('sync', function (response) {
-        response.player_number = valid_sessions.indexOf(session_map[socket.id]) + 1;
-        if(response.player_number == 1){
-            console.log('received', response);
+        response.player_number = valid_sessions.indexOf(socket_session_map[socket.id]) + 1;
+        if(response.player_number == 1){// message from master
+            console.log('socket_session_map[socket.id]', socket_session_map[socket.id]);
+            console.log('valid_sessions[1]',valid_sessions[0]);
+            socket.broadcast.emit('player update', response);
+        } else {// message from slave
+            socket.broadcast
+                .to(session_socket_map[valid_sessions[0]]) // send only to master client
+                .emit('player update', response); 
         }
-        io.emit('player update', response);
     });
 });
 

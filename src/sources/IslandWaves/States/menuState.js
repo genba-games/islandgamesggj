@@ -31,14 +31,15 @@ menuState.prototype =
             var animate = logo.animations.add('animate');
             logo.animations.play('animate', 7, true);
 
-            ipInput = game.add.inputField(600 / 2 - 20, 450, {
+            this.ipInput = game.add.inputField(600 / 2 - 20, 450, {
                 fillAlpha: 0,
                 width: 200,
                 font: '18px JinxedWizards',
-                placeHolder: 'localhost:3000',
+                placeHolder: '  ',
                 placeHolderColor: '#000000',
             });
-            ipInput.text._text = 'localhost:3000'
+            this.ipInput.setText('localhost:3000');
+            this.ipInput.placeHolder.setText('');
         },
         update: function () {
 
@@ -54,6 +55,9 @@ menuState.prototype =
 
             // TODO Setup input to define host
             // socket = open_connection('192.168.0.207:3000', start_game);
-            socket = open_connection(ipInput.text._text, start_game);
+            a = this.ipInput;
+            console.log('ipInput.text._text',this.ipInput.value);
+            console.log('ipInput.text',this.ipInput.text);
+            socket = open_connection(this.ipInput.text._text, start_game);
         },
     };

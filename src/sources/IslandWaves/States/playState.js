@@ -56,6 +56,9 @@ playState.prototype =
                 });
 
                 socket.on('player update', function (data) {
+                    if (self.players[data.player_number] === undefined) {
+                        self.addPlayer(data.player_number);
+                    }
                     if (!isMe(data.player_number) && isPlayer(data.player_number)) {
                         var c = {
                             keys: data.keys,
@@ -232,9 +235,10 @@ playState.prototype =
 
             // Define controller
             console.log('Adding player:', player_number);
-            if (isMe(player_number))
+            if (isMe(player_number)){
+                console.log('this is me!');
                 controller = Controller();
-            else
+            } else
                 controller = addNetworkController(player_number);
 
             // Create island
