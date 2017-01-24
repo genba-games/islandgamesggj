@@ -38,7 +38,7 @@ menuState.prototype =
                 placeHolder: '  ',
                 placeHolderColor: '#000000',
             });
-            this.ipInput.setText('localhost:3000');
+            this.ipInput.setText('waves-server.torresmateo.com');
             this.ipInput.placeHolder.setText('');
         },
         update: function () {
