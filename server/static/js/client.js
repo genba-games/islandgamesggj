@@ -16,36 +16,33 @@ function getCookie(cname) {
     return 0;
 }
 
-var iosession = localStorage.getItem('iosession');
 $(function () {
     var socket = io.connect('localhost:3000');
 
-    $('form').submit(function () {
-        console.log('sending: ' + $('#m').val());
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
+    var addMessage = function(msg){
+        $('#message-list').append($('<li>').text(msg));
+    };
+
+    $('#reset-server').click(function () {
+        // TODO send more stuff to the server to select which game to
+        // reset and that kind of stuff
+        req = {
+            game: 0
+        };
+        socket.emit('reset server', req);
         return false;
     });
 
     socket.on('connect', function () {
-        console.log('ios', iosession);
-        console.log('LS', localStorage);
-        console.log('connected... initiating handshake with session', iosession);
-        socket.emit('hello', iosession);
-    });
-
-    socket.on('session', function (msg) {
-        console.log('session', msg);
-        if (msg.type == 'reconnection') {
-            console.log('reconnection', 'reconnected with session ' + iosession);
-        } else {
-            console.log('new connection', 'iosession: ', msg.iosession);
-            localStorage.setItem('iosession', msg.iosession);
+        req = {
+            type: 'control'
         }
+        socket.emit('server control', req);
+        addMessage('connected to server');
     });
 
-    socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg));
+    socket.on('server info', function (msg) {
+        console.log('server-info', msg);
     });
 });
 

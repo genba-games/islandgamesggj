@@ -8,7 +8,7 @@ var valid_sessions = []; //valid session IDs
 var socket_session_map = {}; 
 var session_socket_map = {};
 
-app.use(express.static('static'));
+app.use(express.static(__dirname + '/static'));
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -58,6 +58,19 @@ io.on('connection', function (socket) {
                 .to(session_socket_map[valid_sessions[0]]) // send only to master client
                 .emit('player update', response); 
         }
+    });
+
+
+    //server control
+    socket.on('server control', function(req){
+        console.log('server control', req);
+        var response = {
+            valid_sessions: valid_sessions,
+            session_socket_map: session_socket_map,
+            socket_session_map: socket_session_map
+        };
+        console.log('response', response);
+        socket.emit('server info', response);
     });
 });
 
